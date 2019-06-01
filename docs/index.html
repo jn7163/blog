@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+	<meta name="generator" content="Hugo 0.55.6" />
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="Queensferry&#39;s Blog"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/"/>
+
+  
+  <link rel="alternate" type="application/rss&#43;xml" href="/index.xml">
+  
+
+  <title>Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    
+
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/life/prose/%E6%80%9D%E8%80%83%E8%87%AA%E6%88%91%E5%B7%A5%E4%BD%9C%E4%B9%8B%E5%A4%96%E7%9A%84%E7%94%9F%E6%B4%BB/'>思考自我：工作之外的生活</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>在现代人的语境中，工作与生活几乎是彻底对立、无法共存的词汇 。我是基本上支持这个观点的，尽管情绪没有那么强烈 —— 或许因为我还是学生 。但今天我想讨论 —— 与其说是讨论，不如说反思更为贴切 —— 的就是现代人的工作性质所导致的工作与生活在语义上的分离，以及我们该如何编排工作之外的生活 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.04.30</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/prose/">prose</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/'>Nilsh：从零开始实现交互式 Shell</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>最近<del>被生活所迫</del>尝试制作 Shell —— 注意是 Interactive Shell 而非 Shell Interpreter 。参照《现代操作系统》一书的描述，Shell 的基本原理就是 <code>fork-and-execute</code> 。程序的基本框架看起来可能是这样的：</p>
+
+<pre><code class="language-C">#define TRUE 1
+
+while (TRUE) {
+  type_prompt();
+  read_command(command, parameters);
+  if (fork() == 0)
+    execve(command, parameters, 0);
+  else waitpid(-1, &amp;status, 0);
+}
+</code></pre>
+
+<p>当然实际实现过程中还是遇到了不少其他问题，这篇博客就简单记录下这些问题及其解决 。我的源代码就托管在 <a href="https://github.com/queensferryme/nilsh">GitHub</a> 上。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.04.21</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/c/">c</a>
+          
+          <a href="/tags/linux/">linux</a>
+          
+          <a href="/tags/shell/">shell</a>
+          
+          <a href="/tags/syscall/">syscall</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/'>与抽象共存：来自计算机科学的感想</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>抽象（Abstraction）是计算机科学中一个常见的概念 —— 在生活中也很常见 。但我们在日常生活中提及抽象时，往往是为了描述某个事物复杂而难以理解，却往往忽略了抽象背后的统一性 。私将抽象理解为“从一系列复杂的具体事物中抽离出有意义的统一形象”，事物的复杂性是抽象存在的土壤 。事先声明，写这篇博客并非为了从技术的角度阐述计算机科学中抽象的概念，而是单纯的有感而发 —— 是因为我在为时尚短的大学生活中发现的抽象能力的普遍缺乏 。这让我感到不安 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.04.02</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/comment/">comment</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/web/backend/flask-celery-redis-%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/'>Flask &#43; Celery &#43; Redis 实现异步处理任务队列</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>最近正在尝试编写网站，其中一个功能是帮助用户从某个 URL 抓取信息 —— 也就是爬虫 。但众所周知，爬虫程序由于 I/O 阻塞通常会消耗较长的时间，无法第一时间对用户请求作出响应 。因此我们会希望让爬虫任务在后台处理，等到执行成功/失败后再将结果返回给用户；而<strong>任务队列</strong>就作为 Web 后端接口与爬虫处理程序之间的一个中介，负责传输任务的具体内容和执行结果 。这篇博客不会具体阐述 Flask Web 开发或 Python 爬虫的相关技术，而将重点聚焦于使用流行的开源异步任务处理框架 <code>Celery</code> 实现一个任务队列的基本功能 。</p>
+
+<p>（我才不是出于咕咕咕的负罪感连更博客的）</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.03.31</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/celery/">celery</a>
+          
+          <a href="/tags/flask/">flask</a>
+          
+          <a href="/tags/python/">python</a>
+          
+          <a href="/tags/redis/">redis</a>
+          
+          <a href="/tags/task-queue/">task queue</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/'>C&#43;&#43; virtual 关键字浅析：多态、抽象与多继承</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>C++ 的<strong>虚函数</strong>算是比较高级的语法特性之一，通过 <code>virutal</code> 关键字来定义，主要用于实现面向对象编程中的多态；<code>virtual</code> 关键字还可以用来定义<strong>纯</strong>虚函数，主要用于实现面向对象编程中的抽象；而且多继承的实现也需要用到 <code>virtual</code> 关键字 。既然 <code>virutal</code> 关键字这么有用，那就写（水）篇博客记录一下吧！</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.03.29</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/c&#43;&#43;/">c&#43;&#43;</a>
+          
+          <a href="/tags/virtual/">virtual</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/basis/design-pattern/python-%E4%BD%BF%E7%94%A8%E5%85%83%E7%B1%BB%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/'>Python 使用元类实现单例模式</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>上次在工厂模式中提到了单例模式，说有空再写（咕）。啊不过也没咕多久啦～这篇博客就介绍一下如何用 Python 元类简单优雅地实现单例模式 。</p>
+
+<p>在一些使用场景里，我们会希望某些类只能创建一个实例，以避免重复造成的资源浪费或是冲突等情况 —— 例如 Windows 系统下的回收站无论如何只能打开一个窗口 —— 这就算是单例模式的应用 。我们通过使用 Python 元类就能非常优雅地实现单例模式 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.03.05</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/design-pattern/">design pattern</a>
+          
+          <a href="/tags/python/">python</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/'>Python 实现工厂模式</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>前几天订阅的 RSS 给我推送了 <a href="https://realpython.com/factory-method-python/#supporting-additional-formats">The Factory Method Pattern and Its Implementation in Python</a>，于是就研究了一番工厂模式 。工厂模式从简单到复杂大约可以分为<strong>简单工厂模式</strong>（又称静态工厂方法模式），<strong>工厂方法模式</strong>（又称多态工厂模式）与<strong>抽象工厂模式</strong>；都是工厂（Factory）—产品（Product）—客户（Client）这样的基础架构 。作为一种创建型模式（Creational Pattern），工厂模式的核心理念就是让某个工厂类来负责生产对象（即产品），客户端只需要提供特定的参数即可；将对象创建和业务处理分离降低系统的耦合度，使得两者修改起来都相对容易 。本文依旧采用 python 实现这一设计模式 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.02.23</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/design-pattern/">design pattern</a>
+          
+          <a href="/tags/python/">python</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/life/comment/%E6%B5%81%E6%B5%AA%E5%9C%B0%E7%90%83%E8%B1%86%E7%93%A3%E7%83%AD%E8%AF%84%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%83%AD%E7%82%B9%E8%A7%82%E7%82%B9%E4%B8%8E%E5%8F%8D%E9%A9%B3/'>《流浪地球》豆瓣热评数据分析：热点、观点与反驳</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>我是在大年初二（即 2 月 6 日）观看的<a href="https://movie.douban.com/subject/26266893">《流浪地球》</a>，但我克制住了立马写影评的冲动 —— 一是因为影片前期宣传口碑火爆，我担心自己受到影响（事实上的确或多或少受到了影响）而带有偏见；二是我有预感这部电影会引起较大的争议，只是没想到围绕豆瓣爆发了一场如此激烈的口水仗 。2 月 14 日（即情人节）这天，我利用闲暇的<strong>单身时间</strong>编写 python 程序抓取了<a href="https://movie.douban.com/subject/26266893/comments?start=0&amp;limit=20&amp;sort=new_score&amp;status=P">豆瓣短评热评</a>中好、中、差评各 500 条并进行了数据分析与可视化，试图从一个更客观的角度解析这部争论不休的电影；而这些数据也的确为我提供了一些新颖的视角，我稍后会在文章中分析 。但首先声明：</p>
+
+<ol>
+<li>我认为尽管《流浪地球》这部电影存在诸多明显的缺陷，但总体来说<strong>瑕不掩瑜</strong>，不失为国产科幻电影的一个良好开端；</li>
+<li>观影体验因人而异，再优秀的电影同样也会有人不喜欢 。我尊重每个人对《流浪地球》<strong>理智</strong>的评价，即使你认为这部电影烂到透顶 。也欢迎你在下方评论提出不同观点；</li>
+<li>尽管我不认同豆瓣上的某些低分评价中的观点，但我认同他们有逻辑条理的分析 。部分人情绪化地对一切反对声音发起谩骂式攻击，这样做与他/她们自己口中的水军又有何区别？</li>
+</ol>
+
+<p>本文主要是影评，对技术部分感兴趣的朋友可以自行查看 <a href="https://gist.github.com/queensferryme/5cbdc167126345416e106e0ec2ffa3be">GitHub Gist</a> 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.02.20</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/comment/">comment</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="pagination">
+  
+  
+  
+  <a href="/page/2/" class="next">
+    阅读更多文章
+  </a>
+  
+  
+</div>
+
+  </div>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

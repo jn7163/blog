@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="最近在做 C 语言课大作业，一拍脑门就决定用 C 语言来实现一个 CGI 程序 —— 这是真实“文案一时爽，开发火葬场” 。总之花了一天时间总算是写出来了，虽然其中大部分时间都是在折腾 sqlite3 那些难懂的接口 。这篇博客就简单记录一下以下几个收获：
+ CGI 与 FastCGI 的概念与区别
+ 处理简单的 GET/POST 请求
+  源代码同样贴在 GitHub，欢迎参观 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/web/backend/%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86cgi-fastcgi%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0/"/>
+
+  
+
+  <title>初步认识CGI/FastCGI：基本架构与C语言实现 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/web/backend/%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86cgi-fastcgi%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0/'>初步认识CGI/FastCGI：基本架构与C语言实现</a></h2>
+          <span class="date">2018.12.30</span>
+        </div>
+        <div class="post_content markdown"><p>最近在做 C 语言课大作业，一拍脑门就决定用 C 语言来实现一个 CGI 程序 —— 这是真实“文案一时爽，开发火葬场” 。总之花了一天时间总算是写出来了，虽然其中大部分时间都是在折腾 sqlite3 那些难懂的接口 。这篇博客就简单记录一下以下几个收获：</p>
+
+<ul>
+<li><p>CGI 与 FastCGI 的概念与区别</p></li>
+
+<li><p>处理简单的 GET/POST 请求</p></li>
+</ul>
+
+<p>源代码同样贴在 <a href="https://github.com/queensferryme/ccgi">GitHub</a>，欢迎参观 。</p>
+
+<h2 id="认识-cgi-fastcgi">认识 CGI / FastCGI</h2>
+
+<h3 id="cgi-的出现">CGI 的出现</h3>
+
+<p>故事要从早些时候说起 。</p>
+
+<p>在 HTTP / HTML 刚被提出的时候，Web 服务器通常只承担着分发静态网页的责任 。但随着时间的流逝，用户对万维网的需求也在不断增加 —— 这其中就包括动态渲染网页的需求 。例如，用户在某个购物网站上对商品进行评价，而这些评价被存储在数据库的内部；当用户想要在网页上看到该商品的最新评价时，我们就必须有某个程序从数据库中选取相应数据并将它们动态地渲染成网页才行 。这就是 CGI 的使命 。</p>
+
+<p>CGI 程序是独立于 Web Server 的中间件，它能起到连接服务器与数据库的作用 。下面这张图简单的说明了 CGI 的工作流程：</p>
+
+<p><img src="https://i.loli.net/2018/12/30/5c2854c26d339.png" alt="User-Server-CGI" /></p>
+
+<p>更准确的说，CGI 是一种 Web 服务器与应用程序之间的协议 —— 这个协议定义了二者之间数据传输的方式 。例如，使用<strong>环境变量</strong>来交换请求参数，使用<strong>STDIN、STDOUT、STDERR</strong>进行输入输出 。下面就给出一个简单的C 语言 CGI 程序：</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define CHUNKSIZE 1024
+
+int main() {
+    char post_data[CHUNKSIZE];
+    fgets(post_data, strtol(getenv(&quot;CONTENT_LENGTH&quot;), NULL, 10) + 1, stdin);
+    printf(&quot;Content-Type: text/html\r\n&quot;
+           &quot;\r\n&quot;
+           &quot;&lt;b&gt;POST DATA&lt;/b&gt;: %s&quot;
+           &quot;&lt;b&gt;QUERY STRING&lt;/b&gt;: %s&quot;,
+           post_data, getenv(&quot;QUERY_STRING&quot;));
+    return 0;
+}
+</code></pre>
+
+<p>虽然这程序看起来丑得难以置信（<sub>小声</sub>），但它的确是一个 CGI 程序 。它通过 STDIN 读取 POST 方法发送的数据，并将生成的 HTTP 响应通过 STDOUT 返回给 Web 服务器，其中还有一些参数（比如 <code>CONTENT_LENGTH</code> 与 <code>QUERY_STRING</code>）通过环境变量传递给 CGI 程序 。如果你使用 lighttpd 或是 Apache 之类的服务器进行相应的配置，你就可以访问这个网页了 。</p>
+
+<h3 id="更快的-fastcgi">更快的 FastCGI</h3>
+
+<p>CGI 的出现是个极大的进步，但是它也很快遇到了新的瓶颈 —— 性能问题 。CGI 协议采用了 <code>fork-and-execute</code> 的执行模式，对于没一个请求都会启动一个新的进程；而这个进程一旦处理完相应的请求就会自动退出 。这种执行方式低效且占用系统资源（<sub>想想双十一晚上你需要启动多少进程</sub>），于是就有了 FastCGI 。FastCGI 在原有的基础上增加了一个统一的进程管理调度机制 —— 它管理着多个子级 CGI 解释器，并且能做到高效的请求分配和进程复用，从而是服务器性能有了很大的提升 。</p>
+
+<p>古老的故事就到此为止了，下面讲讲具体的实现 。</p>
+
+<h2 id="实现-fcgi">实现 FCGI ！</h2>
+
+<h3 id="安装依赖">安装依赖</h3>
+
+<ul>
+<li><code>spawn-fcgi</code>
+
+<ul>
+<li>作用：用于生成 FCGI 进程</li>
+<li>安装</li>
+<li>Ubuntu：<code>apt-get install spawn-fcgi</code></li>
+<li>Others：<a href="https://github.com/lighttpd/spawn-fcgi">https://github.com/lighttpd/spawn-fcgi</a></li>
+</ul></li>
+<li><code>fcgi</code>
+
+<ul>
+<li>作用：实现了 FCGI 协议的开发标准库</li>
+<li>安装</li>
+<li>Ubuntu：<code>apt-get install libfcgi-dev</code></li>
+<li>Others：<a href="https://fastcgi-archives.github.io/">https://fastcgi-archives.github.io/</a></li>
+</ul></li>
+<li><code>sqlite3</code>
+
+<ul>
+<li>作用：sqlite3 数据库开发件</li>
+<li>安装</li>
+<li>Ubuntu：<code>apt-get install libsqlite3-dev</code></li>
+<li>Others：<a href="https://www.sqlite.org/download.html">https://www.sqlite.org/download.html</a></li>
+</ul></li>
+</ul>
+
+<h3 id="路由与视图函数绑定">路由与视图函数绑定</h3>
+
+<p>参考 Flask 与 Django 的一些开发经验，我设计出这样相对清晰的业务处理逻辑：</p>
+
+<pre><code class="language-c">int main() {
+    while(FCGI_Accept() &gt;= 0) {
+        char *route = getenv(&quot;DOCUMENT_URI&quot;)，
+             *query_string = getenv(&quot;QUERY_STRING&quot;),
+             *method = getenv(&quot;REQUEST_METHOD&quot;);
+        if(equal(route, &quot;/user&quot;) &amp;&amp; equal(method, &quot;GET&quot;))
+            user(query_string);
+        else if(equal(route, &quot;/admin&quot;) &amp;&amp; equal(method, &quot;GET&quot;))
+            admin();
+        else if(equal(route, &quot;/update&quot;) &amp;&amp; equal(method, &quot;POST&quot;))
+            update(query_string);
+        else if(equal(route, &quot;/delete&quot;) &amp;&amp; equal(method, &quot;GET&quot;))
+            delete(query_string);
+        else sysinfo();
+    }
+    return 0;
+}
+</code></pre>
+
+<p>需要注意的是在这种情况下，<code>/user</code> 与 <code>/user/</code> 是不同的 —— 在上面这个程序中我只匹配了 <code>/user</code> 路径 。</p>
+
+<h3 id="从-stdin-处理-post-数据">从 STDIN 处理 POST 数据</h3>
+
+<p>从标准输入流读取数据并不困难，但在 FCGI 环境下有一个小坑 —— Web 服务器提供的输入流不保证能够有正确的终止符号，例如 EOF 或者空字符 <code>\0</code> 等 。所以我们需要根据 <code>CONTENT_LENGTH</code> 环境变量来读取对应数量的数据 。</p>
+
+<pre><code class="language-c">int content_length = strtol(getenv(&quot;CONTENT_LENGTH&quot;), NULL, 10);
+fgets(post_data, content_length + 1, stdin);
+</code></pre>
+
+<h3 id="编译与部署">编译与部署</h3>
+
+<p>项目并不复杂，只有 <code>main.c</code> 、<code>routers.h</code>  、<code>utils.h</code> 三个文件，只需要写好 Makefile 编译即可 。编译时参数有 <code>-l sqlite3</code> 和 <code>-lfcgi</code> 以链接相应库 。假设编译生成的 CGI 程序为 <code>main.cgi</code> 。</p>
+
+<p>编译成功后，就可以使用 <code>spawn-fcgi</code> 命令来启动 FCGI 进程 。例如：<code>spawn-fcgi -a 127.0.0.1 -p 5000 -f $PWD/main.cgi -P main.pid</code> 。这个命令会从 <code>main.cgi</code> 启动 FCGI 进程并监听本地的 5000 端口，进程的 pid 同时也会被保存在当前目录的 <code>main.pid</code> 文件内 。</p>
+
+<div class="note danger">**注意**：`spawn-fcgi` 中可执行文件应该使用绝对路径 。</div>
+
+<p>最后的部署我采用了个人最喜欢的高性能 Web 服务器 Nginx 。服务器配置只有简单的几行：</p>
+
+<pre><code class="language-nginx">server {
+    listen 4000;
+    server_name localhost;
+    location / {
+        fastcgi_pass 127.0.0.1:5000;
+        fastcgi_index index.cgi;
+        include /etc/nginx/fastcgi.conf;
+    }
+}
+</code></pre>
+
+<p>（*不说了，复习线性代数去了qwq*）</p>
+
+<hr />
+
+<p><strong>参考文献：</strong></p>
+
+<ul>
+<li><a href="https://www.cnblogs.com/wanghetao/p/3934350.html">博客园：CGI与FastCGI</a></li>
+<li><a href="https://www.cnblogs.com/skynet/p/4173450.html">博客园：Nginx + CGI/FastCGI + C/Cpp</a></li>
+<li><a href="https://fastcgi-archives.github.io/FastCGI_Developers_Kit_FastCGI.html">FastCGI-Archives：FastCGI Developers‘ Kit</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/c/">c</a>
+                
+                <a href="/tags/cgi/">cgi</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

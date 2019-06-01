@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>shell on Queensferry&#39;s Blog</title>
+    <link>/tags/shell/</link>
+    <description>Recent content in shell on Queensferry&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 21 Apr 2019 08:09:04 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Nilsh：从零开始实现交互式 Shell</title>
+      <link>/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/</link>
+      <pubDate>Sun, 21 Apr 2019 08:09:04 +0000</pubDate>
+      
+      <guid>/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/</guid>
+      <description>&lt;p&gt;最近&lt;del&gt;被生活所迫&lt;/del&gt;尝试制作 Shell —— 注意是 Interactive Shell 而非 Shell Interpreter 。参照《现代操作系统》一书的描述，Shell 的基本原理就是 &lt;code&gt;fork-and-execute&lt;/code&gt; 。程序的基本框架看起来可能是这样的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;#define TRUE 1
+
+while (TRUE) {
+  type_prompt();
+  read_command(command, parameters);
+  if (fork() == 0)
+    execve(command, parameters, 0);
+  else waitpid(-1, &amp;amp;status, 0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然实际实现过程中还是遇到了不少其他问题，这篇博客就简单记录下这些问题及其解决 。我的源代码就托管在 &lt;a href=&#34;https://github.com/queensferryme/nilsh&#34;&gt;GitHub&lt;/a&gt; 上。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

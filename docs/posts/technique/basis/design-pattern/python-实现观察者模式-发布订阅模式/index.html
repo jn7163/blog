@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="春节回乡拜年莫得电脑，于是窝在阁楼上看了些文字 —— 其中就包括发布订阅模式的一些相关内容 。发布订阅模式是设计模式中的比较简单一种；它定义了消息在生产者/发布者与消费者/订阅者之间传递的方式 。实际开发中我们通常会使用 Redis / ZeroMQ 等中间件来实现消息分发，但这里我只用 Python 来描述其中的逻辑关系 —— 使用其他语言乃至中间件的逻辑关系基本都是相同的，只有一些细节性差别 。值得一提的是，尽管多数情况下我们将观察者模式与发布订阅模式混为一谈（或认为观察者=发布&#43;订阅），但事实上它们之间存在一定的区别，这点我稍后也会提到 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/"/>
+
+  
+
+  <title>Python 实现观察者模式/发布订阅模式 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/'>Python 实现观察者模式/发布订阅模式</a></h2>
+          <span class="date">2019.02.07</span>
+        </div>
+        <div class="post_content markdown"><p>春节回乡拜年莫得电脑，于是窝在阁楼上看了些文字 —— 其中就包括<code>发布订阅模式</code>的一些相关内容 。<code>发布订阅模式</code>是设计模式中的比较简单一种；它定义了消息在生产者/发布者与消费者/订阅者之间传递的方式 。实际开发中我们通常会使用 Redis / ZeroMQ 等中间件来实现消息分发，但这里我只用 Python 来描述其中的逻辑关系 —— 使用其他语言乃至中间件的逻辑关系基本都是相同的，只有一些细节性差别 。<strong>值得一提的是</strong>，尽管多数情况下我们将<code>观察者模式</code>与<code>发布订阅模式</code>混为一谈（或认为<code>观察者=发布+订阅</code>），但事实上它们之间存在一定的区别，这点我稍后也会提到 。</p>
+
+<h2 id="实现发布订阅模式">实现发布订阅模式</h2>
+
+<p>先看一看具体的实现可能有助于更直观的理解（完整代码可以查看 <a href="https://gist.github.com/queensferryme/ffabe20f58fd84ddba3e5d2f28a1ec74">GitHub Gist</a>）：</p>
+
+<p><strong>Intermedia</strong></p>
+
+<pre><code class="language-python">class Intermedia:
+    channels = defaultdict(dict)
+    @classmethod
+    def broadcast(cls, channel, msg):
+        '''broadcast a message to specific subscribers'''
+        for name, callback in cls.channels[channel].items():
+            callback({
+                'channel': channel,
+                'msg': msg,
+                'name': name
+            })
+    @classmethod
+    def register(cls, channel, subscriber):
+        '''register a subscriber into specific channel'''
+        cls.channels[channel][subscriber.name] = subscriber.callback
+    @classmethod
+    def unregister(cls, channel, subscriber):
+        '''unregister a subscriber from specific channel'''
+        del cls.channels[channel][subscriber.name]
+</code></pre>
+
+<p><strong>Publisher</strong></p>
+
+<pre><code class="language-python">class Publisher:
+    @classmethod
+    def publish(self, channel, msg):
+        '''publish a message to specific channel'''
+        Intermedia.broadcast(channel, msg)
+</code></pre>
+
+<p><strong>Subscriber</strong></p>
+
+<pre><code class="language-python">class Subscriber:
+    def __init__(self, name, callback=None):
+        self.name = name
+        self.callback = callback if callable(callback) else self.callback
+    def callback(self, msg):
+        '''default event handler for current subscriber'''
+        print('Subscriber &quot;{0[name]}&quot; receive message &quot;{0[msg]}&quot; from channel &quot;{0[channel]}&quot;'.format(msg))
+    def subscribe(self, channel):
+        '''subscribe specific channel from publisher'''
+        Intermedia.register(channel, self)
+    def unsubscribe(self, channel):
+        '''unsubscribe specific channel from publisher'''
+        Intermedia.unregister(channel, self)
+</code></pre>
+
+<p>代码并不难理解 。可以看到，订阅者（Subscriber）能够从信息媒体（Intermedia）处订阅（subscribe）特定的频道（channel）或取消订阅（unsubscribe）；而发布者可以在信息媒体上特定的频道（channel）发布消息（message），消息发布后只有订阅了该频道的订阅者才会收到这条消息，并执行相应的回调函数（callback）来处理这条消息 。消息通过信息媒体在发布者/订阅者之间传递 。</p>
+
+<p>注意这里 <code>Intermedia</code> 的 <code>channels</code> 属性 。它以字典的形式记录了每个频道的所有订阅者以及每个订阅者处理消息的回调函数 。事实上 <code>channels</code> 根本不必作为属性，它可以是一个全局字典变量，甚至可以是一个 Redis 中间件 —— 事实上它就是一个<strong>作为消息代理的中间件</strong>，无论是发布者发布特定消息还是订阅者订阅某个频道，都是在这个中间件上进行操作；发布者与订阅者无需知晓对方的存在 。而中间件负责了消息的过滤与分发的工作 。这一<strong>中间件</strong>是区别观察者模式与发布订阅模式的主要特征 。</p>
+
+<p>维基百科是这样描述的：</p>
+
+<blockquote>
+<p>在许多发布/订阅系统中，发布者发布消息到一个中间的消息代理，然后订阅者向该消息代理注册订阅，由消息代理来进行过滤。消息代理通常执行存储转发的功能将消息从发布者发送到订阅者。</p>
+</blockquote>
+
+<h2 id="观察者模式及其区别">观察者模式及其区别</h2>
+
+<p><img src="https://i.loli.net/2019/02/08/5c5d031b976ad.jpg" alt="observer-pattern" /></p>
+
+<p>从上图不难看出，观察者模式与发布订阅模式的主要区别就是<strong>中间件</strong> 。发布订阅模式在生活中社交媒体上很常见，而观察者模式也有个常见的场景：JavaScript 中的事件模型。例如：</p>
+
+<pre><code class="language-javascript">document.querySelector('#submit').addEventListener('click', clickHandler)；
+</code></pre>
+
+<p>这里可以理解为 <code>#submit</code> 元素订阅了 <code>click</code> 频道；一旦该元素被点击，<code>click</code> 事件就会被触发（fire），然后相应的回调函数（此处为 <code>clickHandler</code>）就会被调用来处理消息（此处可能为 <code>event.target</code>）</p>
+
+<hr />
+
+<p><strong>参考文献：</strong></p>
+
+<ul>
+<li><a href="https://www.protechtraining.com/blog/post/tutorial-the-observer-pattern-in-python-879">Tutorial: The Observer Pattern in Python</a></li>
+<li><a href="https://juejin.im/post/5a14e9edf265da4312808d86">掘金：观察者模式 vs 发布-订阅模式</a></li>
+<li><a href="https://segmentfault.com/a/1190000013009772">SegmentFault：JavaScript 观察者模式</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/design-pattern/">design pattern</a>
+                
+                <a href="/tags/python/">python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

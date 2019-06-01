@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+	<meta name="generator" content="Hugo 0.55.6" />
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="Queensferry&#39;s Blog"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/"/>
+
+  
+  <link rel="alternate" type="application/rss&#43;xml" href="/index.xml">
+  
+
+  <title>Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    
+
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/'>Python 实现观察者模式/发布订阅模式</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>春节回乡拜年莫得电脑，于是窝在阁楼上看了些文字 —— 其中就包括<code>发布订阅模式</code>的一些相关内容 。<code>发布订阅模式</code>是设计模式中的比较简单一种；它定义了消息在生产者/发布者与消费者/订阅者之间传递的方式 。实际开发中我们通常会使用 Redis / ZeroMQ 等中间件来实现消息分发，但这里我只用 Python 来描述其中的逻辑关系 —— 使用其他语言乃至中间件的逻辑关系基本都是相同的，只有一些细节性差别 。<strong>值得一提的是</strong>，尽管多数情况下我们将<code>观察者模式</code>与<code>发布订阅模式</code>混为一谈（或认为<code>观察者=发布+订阅</code>），但事实上它们之间存在一定的区别，这点我稍后也会提到 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.02.07</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/design-pattern/">design pattern</a>
+          
+          <a href="/tags/python/">python</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/language/python/python-%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%BD%BF%E7%94%A8-smtplib-%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/'>Python 学习手记：使用 smtplib 发送邮件</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>高中时期就用 Python 写过一个邮件发送脚本，但当时的逻辑处理得相当凌乱 。这次利用了一个周末晚上总结规整了一下 <code>smtplib</code> 与 <code>email</code> 模块的用法，并写了一个鲁棒性比较强且支持模板填充的<a href="https://gist.github.com/queensferryme/fac00cb791b7d53e49ad12a72b19d754">邮件群发脚本</a> 。这篇博客就简单记录一下 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.01.19</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/python/">python</a>
+          
+          <a href="/tags/smtp/">smtp</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/life/prose/%E5%91%93%E8%AF%AD2018-2019/'>呓语：2018 / 2019</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p><a href="https://i.loli.net/2019/01/01/5c2b01fd2f63c.jpg"><img src="https://i.loli.net/2019/01/01/5c2b01fd2f63c.jpg" alt="happy-new-year-2019" /></a></p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2019.01.01</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/prose/">prose</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/web/backend/%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86cgi-fastcgi%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0/'>初步认识CGI/FastCGI：基本架构与C语言实现</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>最近在做 C 语言课大作业，一拍脑门就决定用 C 语言来实现一个 CGI 程序 —— 这是真实“文案一时爽，开发火葬场” 。总之花了一天时间总算是写出来了，虽然其中大部分时间都是在折腾 sqlite3 那些难懂的接口 。这篇博客就简单记录一下以下几个收获：</p>
+
+<ul>
+<li><p>CGI 与 FastCGI 的概念与区别</p></li>
+
+<li><p>处理简单的 GET/POST 请求</p></li>
+</ul>
+
+<p>源代码同样贴在 <a href="https://github.com/queensferryme/ccgi">GitHub</a>，欢迎参观 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2018.12.30</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/c/">c</a>
+          
+          <a href="/tags/cgi/">cgi</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/'>基于 Vue.js 实现递归树形导航栏组件以及页面锚点同步滚动</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>这篇博客的标题不是很直观 —— 事实上就是实现了类似百度百科（*以及本博客*）的导航栏效果 。可以这样描述核心功能：</p>
+
+<ul>
+<li>首先，将正文内容按 H1 ~ H6 解析成递归的树形结构数据并映射到导航栏</li>
+<li>其次，在用户点击导航栏时将正文平滑滚动到相应锚点</li>
+<li>最后，当正文内容滚动时同步更新导航栏（高亮活动元素）</li>
+</ul>
+
+<p>项目的全部源代码与效果图都在 <a href="https://github.com/queensferryme/treeview">GitHub</a> 上，欢迎参观 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2018.12.22</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/vue/">vue</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/'>Let&#39;s Encrypt 证书配置：使用 acme.sh 自动化工具</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>最近学习浏览器的 Notification API，想要完成一个具有类原生推送功能的页面 。但在部署过程中发现 Chrome 等现代浏览器大多只允许 https 网站发送通知，所以借此机会配置一下 Nginx 服务器的 ssl 访问 。我选择的是开源免费的 Let's Encrypt 证书和一套非常方便的 acme (Automatic Certificate Management Environment) 工具 <a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2018.11.28</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/https/">https</a>
+          
+          <a href="/tags/nginx/">nginx</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/technique/language/javascript/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-js-%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/'>深入理解 JS 函数：基础语法与函数调用</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p>JavaScript 的类函数式编程无疑是该语言中最为强大的特性之一，但这种强大是有代价的 —— 要想深入理解并运用 JavaScript 函数的各种特性，就需要付出更多的系统性的努力。这篇文章大致是一份读书笔记，系统总结一下我近期学到的 JavaScript 函数基础语法及函数调用相关知识。</p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2018.11.16</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/function/">function</a>
+          
+          <a href="/tags/javascript/">javascript</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="post animated fadeInDown">
+  <div class="post_title">
+    <h2><a href='/posts/life/prose/%E6%95%85%E9%83%BD%E7%A7%8B%E9%81%90%E6%83%B3/'>故都•秋•遐想</a></h2>
+  </div>
+  
+  <div class="list">
+    <div class="post_content markdown">
+      <p><p><a href="https://i.loli.net/2018/11/10/5be6bf5f416fe.png"><img src="https://i.loli.net/2018/11/10/5be6bf5f416fe.png" alt="river-lantern" /></a></p>......</p>
+    </div>
+  </div>
+  
+  <div class="post_footer">
+    <div class="meta">
+      <div class="info">
+        <span class="field">
+          <i class="remixicon-map-pin-time-line"></i>
+          <span class="date">2018.11.10</span>
+        </span>
+        
+        <span class="field tags">
+          <i class="remixicon-stack-line"></i>
+          
+          <a href="/tags/prose/">prose</a>
+          
+        </span>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="pagination">
+  
+  
+  <a href="/" class="pre">
+    返回上一页
+  </a>
+  
+  
+  <a href="/page/3/" class="next">
+    阅读更多文章
+  </a>
+  
+  
+</div>
+
+  </div>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

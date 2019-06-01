@@ -1,0 +1,61 @@
+baseURL = "/"
+languageCode = "zh-cn"
+defaultContentLanguage = "zh-cn"
+title = "Queensferry's Blog"
+theme = "zozo"
+hasCJKLanguage = true
+paginate = 8
+enableEmoji = true
+googleAnalytics = ""
+disqusShortname = ""
+publishDir = "docs"
+
+[author]
+  name = "Queensferry"
+
+[blackfriday]
+  smartypants = false
+
+[[menu.main]]
+  name = "首页"
+  weight = 10
+  identifier = "home"
+  url = "/"
+[[menu.main]]
+  name = "归档"
+  weight = 20
+  identifier = "archive"
+  url = "/posts/"
+[[menu.main]]
+  name = "标签"
+  weight = 30
+  identifier = "tags"
+  url = "/tags/"
+[[menu.main]]
+  name = "关于"
+  weight = 40
+  identifier = "about"
+  url = "/about/"
+
+[params]
+  subTitle = "长桥寂寞春寒夜"
+  footerSlogan = ""
+  keywords = ["Hugo", "blog"]
+  description = "Queensferry's Blog"
+  enableMathJax = true
+  enableSummary = true
+  
+# Valine.
+# You can get your appid and appkey from https://leancloud.cn
+# more info please open https://valine.js.org
+[params.valine]
+  enable = false
+  appId = ""
+  appKey = ""
+  placeholder = " "
+  visitor = true
+
+[social]
+  github = "https://github.com/queensferryme"
+  telegram = "https://t.me/queensferryme"
+  twitter = "https://twitter.com/queensferryme"

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="最近被生活所迫尝试制作 Shell —— 注意是 Interactive Shell 而非 Shell Interpreter 。参照《现代操作系统》一书的描述，Shell 的基本原理就是 fork-and-execute 。程序的基本框架看起来可能是这样的：
+#define TRUE 1 while (TRUE) { type_prompt(); read_command(command, parameters); if (fork() == 0) execve(command, parameters, 0); else waitpid(-1, &amp;amp;status, 0); }  当然实际实现过程中还是遇到了不少其他问题，这篇博客就简单记录下这些问题及其解决 。我的源代码就托管在 GitHub 上。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/"/>
+
+  
+
+  <title>Nilsh：从零开始实现交互式 Shell &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/'>Nilsh：从零开始实现交互式 Shell</a></h2>
+          <span class="date">2019.04.21</span>
+        </div>
+        <div class="post_content markdown"><p>最近<del>被生活所迫</del>尝试制作 Shell —— 注意是 Interactive Shell 而非 Shell Interpreter 。参照《现代操作系统》一书的描述，Shell 的基本原理就是 <code>fork-and-execute</code> 。程序的基本框架看起来可能是这样的：</p>
+
+<pre><code class="language-C">#define TRUE 1
+
+while (TRUE) {
+  type_prompt();
+  read_command(command, parameters);
+  if (fork() == 0)
+    execve(command, parameters, 0);
+  else waitpid(-1, &amp;status, 0);
+}
+</code></pre>
+
+<p>当然实际实现过程中还是遇到了不少其他问题，这篇博客就简单记录下这些问题及其解决 。我的源代码就托管在 <a href="https://github.com/queensferryme/nilsh">GitHub</a> 上。</p>
+
+<h2 id="代码结构">代码结构</h2>
+
+<p>从上面的代码片段中，你可能已经大概了解了 Shell 的执行流程了 。下面具体阐述一下：</p>
+
+<ol>
+<li>初始化 Shell 环境</li>
+<li>打印命令行提示符（如 <code>$</code> 等）</li>
+<li>读入并解析命令</li>
+<li>执行命令（命令分为内置与外部两种）</li>
+<li>返回步骤 2 或退出 Shell</li>
+</ol>
+
+<p>其中命令的解析与执行是最重要的两部分 。在我的 <a href="https://github.com/queensferryme/nilsh">GitHub</a> 上你可以看到我的代码也是依此来划分功能模块的：</p>
+
+<ul>
+<li><code>execute.c</code> 模块负责命令的执行</li>
+<li><code>parse.c</code> 模块负责命令的解析</li>
+<li><code>utils.c</code> 模块包含了其他辅助功能</li>
+<li><code>main.c</code> 包含了主函数</li>
+</ul>
+
+<p>环境初始化以及打印提示符细枝末节就不说了，想了解请直接看源码 。</p>
+
+<h2 id="命令解析">命令解析</h2>
+
+<p>然后就到了解析命令的时候了 。我的思路比较简单粗暴<del>不严谨</del>，将来系统学习了形式语言之类的专业课后再来重写解析器（咕）。目前的思路就是将一个简单命令划分为三个部分：命令、参数与 I/O 重定向，而一个复合命令可能由多个简单命令通过管道 <code>|</code> 连接起来 。</p>
+
+<p>命令解析流程大概就这么出来了：</p>
+
+<ol>
+<li><p>将命令按照管道符 <code>|</code> 分割开来，如果没有管道符则视为单条简单命令；</p></li>
+
+<li><p>将分割出的子串再通过空格或制表符等分割开来，分类为为命令与 I/O 重定向，存储进 <code>Command</code>  结构体，结构体声明如下：</p>
+
+<pre><code class="language-C">#define VAR_MAX_LENGTH 128
+    
+typedef struct {
+  char* args[VAR_MAX_LENGTH];
+  char in[VAR_MAX_LENGTH];
+  char out[VAR_MAX_LENGTH];
+} Command;
+</code></pre>
+
+<p>其中 <code>args[0]</code> 存储的是命令，<code>args</code> 存储命令及其参数， <code>in</code> 与 <code>out</code> 存储 I/O 重定向位置（默认 <code>stdin</code> 与 <code>stdout</code>）；</p>
+
+<ol>
+<li>将各简单命令的解析结果 <code>Command</code> 存储进 <code>CommandPool</code> 结构体中，结构体声明如下：</li>
+</ol>
+
+<pre><code class="language-C">typedef struct {
+  Command list[VAR_MAX_LENGTH];
+  size_t count;
+} CommandPool;
+</code></pre>
+
+<p>其中 <code>count</code> 记录了简单命令的数目，这些简单命令被依次存储在 <code>Command</code> 结构体数组中，执行时通过管道连接；</p></li>
+</ol>
+
+<p>具体实现请参见源代码，这里就不再赘述 。</p>
+
+<h2 id="命令执行">命令执行</h2>
+
+<h3 id="fork-执行外部命令">fork() 执行外部命令</h3>
+
+<p>解析完成后就可以开始执行命令了 。首先考虑没有管道的情况，此时简单命令又被分为内置命令与外部命令 。内置命令包括 <code>cd</code> <code>exit</code> 等，它们无需或无法通过执行外部二进制文件来实现；外部命令则可能是 <code>/bin</code> 或者 <code>/usr/bin</code> 目录下的二进制可执行文件，这时我们就需要通过 <code>fork-and-execute</code> 的方式在子进程中执行之 。</p>
+
+<p>你可以看到我用于执行单条简单命令的 <code>execute_command</code> 函数的实现（位于 <code>execute.c</code>）：</p>
+
+<pre><code class="language-C">void execute_command(Command* cmd) {
+  if (is_builtin_command(cmd-&gt;args[0]))
+    execute_builtin_command(cmd);
+  else execute_external_command(cmd);
+}
+</code></pre>
+
+<p>值得细说的是外部命令的执行，这里我们需要理解 <code>fork</code> 函数的作用 。</p>
+
+<p><code>fork</code> 函数的作用就是创建子进程，它的特殊之处就在于<strong>执行一次返回两次</strong> —— 在父进程中返回子进程 pid，在子进程中返回 0 。考虑以下代码：</p>
+
+<pre><code class="language-C">if (fork() == 0)
+  printf(&quot;child process&quot;);
+else printf(&quot;parent process&quot;);
+</code></pre>
+
+<p>在子进程中 <code>fork() == 0</code> 为真，故输出 <code>child process</code>；在父进程中则输出 <code>parent process</code> 。</p>
+
+<p>还需要注意的是 fork 出的<strong>子进程继承了父进程的上下文</strong>，包括各种变量、函数以及当前执行到哪一条语句 。因此子进程被创建后会从 fork 函数后的第一条指令开始继续执行，而非从头开始 。在上例中子进程被创建后就会立刻开始判断 <code>fork() == 0</code> 是否成立，而不是从头开始执行 <code>main</code> 函数 。</p>
+
+<p>然后我们再回来看 <code>execute_external_command</code> 函数，代码如下：</p>
+
+<pre><code class="language-C">void execute_external_command(Command* cmd) {
+  pid_t pid = fork();
+  if (pid == 0) {
+    if (cmd-&gt;in[0])
+      freopen(cmd-&gt;in, &quot;r&quot;, stdin);
+    if (cmd-&gt;out[0])
+      freopen(cmd-&gt;out, &quot;w&quot;, stdout);
+    if (execvp(cmd-&gt;args[0], cmd-&gt;args))
+      fprintf(stderr, &quot;\033[0;31m%s\033[0m&quot;, &quot;no such command\n&quot;);
+    exit(0);
+  }
+  else waitpid(pid, NULL, 0);
+}
+</code></pre>
+
+<p>在父进程中我们需要使用 <code>waitpid</code> 等待子进程执行完毕后再进入下一个读取-解析-执行主循环，而在子进程中我们也需要使用 <code>exit(0)</code> 来结束子进程，以免它进入下一个读取-解析-执行主循环 。</p>
+
+<h3 id="freopen-实现-i-o-重定向">freopen() 实现 I/O 重定向</h3>
+
+<p>上述 <code>execute_external_command</code> 中还有 <code>freopen</code> 函数，它就是用来实现 I/O 重定向的。用法也很简单：</p>
+
+<pre><code class="language-C">freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+freopen(&quot;out.txt&quot;, &quot;w&quot;, stdout);
+</code></pre>
+
+<p>两条语句分别实现了把 <code>in.txt</code> 文件以读（read）模式打开，并将标准输入（stdin）重定向到该文件以及把 <code>out.txt</code> 文件以写（write）模式打开，并将标准输出（stdout）重定向到该文件 。</p>
+
+<h3 id="pipe-实现管道">pipe() 实现管道</h3>
+
+<p><code>pipe</code> 函数用于创建管道，它接受一个二元数组 <code>fd</code> 为参数，并使 <code>fd[0]</code> 成为读端、<code>fd[1]</code> 成为写端 。这里的 <code>fd</code> 是 file descriptor 的缩写，<code>pipe</code> 函数其实就是创建了两个文件描述符，使之成为管道 —— 管道的一方向管道中写内容，另一方则从管道中读内容 。考虑以下代码：</p>
+
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main() {
+  int fd[2];
+  pipe(fd);
+  pid_t pid = fork();
+  if (pid == 0) {
+    dup2(fd[0], 0);
+    close(fd[0]);
+    close(fd[1]);
+    putchar(getchar());
+  } else {
+    dup2(fd[1], 1);
+    close(fd[0]);
+    close(fd[1]);
+    putchar('A');
+  }
+  return 0;
+}
+</code></pre>
+
+<p>执行结果输出字符 A，表示管道通信成功 。</p>
+
+<p>那么对于具体命令 <code>ls -l | tail -n 2</code> ，我们就可以创建一个管道，使 <code>ls -l</code> 的输出写到 <code>fd[1]</code> 写端；然后 <code>tail -n 2</code> 就可以从 <code>fd[0]</code> 读端读取 <code>ls -l</code> 的输出，分别执行即可 。</p>
+
+<p>对于有 n 条嵌套的管道，逻辑也是类似的，但会更复杂一些 —— 尤其是处理一层层的 <code>fork</code> 令人头疼无比 。最后我参考 StackOverflow 上的一个<a href="https://stackoverflow.com/questions/8082932/connecting-n-commands-with-pipes-in-a-shell">回答</a>完成了这个功能，具体可参加 <code>execute_piped_command</code> 函数 。</p>
+
+<h2 id="成果展示">成果展示</h2>
+
+<p><a href="https://asciinema.org/a/241297"><img src="https://asciinema.org/a/241297.svg" alt="asciicast" /></a></p>
+
+<hr />
+
+<p><strong>参考文献：</strong></p>
+
+<ul>
+<li><a href="https://www.tomorrow.wiki/archives/tag/stupidshell">Tomorrow 的博客：DIY Shell 系列</a></li>
+<li><a href="https://stackoverflow.com/questions/8082932/connecting-n-commands-with-pipes-in-a-shell">StackOverflow: Connecting n commands with pipes in a shell?</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/c/">c</a>
+                
+                <a href="/tags/linux/">linux</a>
+                
+                <a href="/tags/shell/">shell</a>
+                
+                <a href="/tags/syscall/">syscall</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="最近正在尝试编写网站，其中一个功能是帮助用户从某个 URL 抓取信息 —— 也就是爬虫 。但众所周知，爬虫程序由于 I/O 阻塞通常会消耗较长的时间，无法第一时间对用户请求作出响应 。因此我们会希望让爬虫任务在后台处理，等到执行成功/失败后再将结果返回给用户；而任务队列就作为 Web 后端接口与爬虫处理程序之间的一个中介，负责传输任务的具体内容和执行结果 。这篇博客不会具体阐述 Flask Web 开发或 Python 爬虫的相关技术，而将重点聚焦于使用流行的开源异步任务处理框架 Celery 实现一个任务队列的基本功能 。
+（我才不是出于咕咕咕的负罪感连更博客的）
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/web/backend/flask-celery-redis-%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/"/>
+
+  
+
+  <title>Flask &#43; Celery &#43; Redis 实现异步处理任务队列 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/web/backend/flask-celery-redis-%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/'>Flask &#43; Celery &#43; Redis 实现异步处理任务队列</a></h2>
+          <span class="date">2019.03.31</span>
+        </div>
+        <div class="post_content markdown"><p>最近正在尝试编写网站，其中一个功能是帮助用户从某个 URL 抓取信息 —— 也就是爬虫 。但众所周知，爬虫程序由于 I/O 阻塞通常会消耗较长的时间，无法第一时间对用户请求作出响应 。因此我们会希望让爬虫任务在后台处理，等到执行成功/失败后再将结果返回给用户；而<strong>任务队列</strong>就作为 Web 后端接口与爬虫处理程序之间的一个中介，负责传输任务的具体内容和执行结果 。这篇博客不会具体阐述 Flask Web 开发或 Python 爬虫的相关技术，而将重点聚焦于使用流行的开源异步任务处理框架 <code>Celery</code> 实现一个任务队列的基本功能 。</p>
+
+<p>（我才不是出于咕咕咕的负罪感连更博客的）</p>
+
+<h2 id="准备工作">准备工作</h2>
+
+<h3 id="安装-redis">安装 Redis</h3>
+
+<p><code>Redis</code> （<a href="https://redis.io/">https://redis.io/</a> ）是一个开源的 Key-Value 数据库，通常运行在内存中，也可以存储可持久化数据 。Redis 拥有极高的性能（110000 read/s，81000 write/s ）与丰富的内置数据结构（包括可以作为队列使用的列表数据结构），近年来变得十分流行 。这里我选择使用 Redis 作为任务队列的消息中间件，也就是使用它来作为任务/结果传输的载体 。</p>
+
+<p>在类 Unix 系统上安装 Redis 相当方便，许多包管理器都提供了一键式安装，也可以去上面提到的官网下载；在 Windows 系统上安装可以试试<a href="https://github.com/MicrosoftArchive/redis">这个</a> 。我个人的选择是通过 <code>docker</code> 安装：</p>
+
+<pre><code class="language-bash">docker pull redis
+docker run --name redis -p 127.0.0.1:6379:6379 -d redis:latest
+</code></pre>
+
+<p>这样一个 Redis 容器实例就在你的宿主机上运行起来了，你可以通过 <code>redis://localhost:6379</code> 连接 。如果你需要通过 Python 操作 Redis，你还需要 <code>pip install redis</code> 。</p>
+
+<p>完成以上步骤以后你已经可以实现一个简单的任务队列了 。例如：</p>
+
+<p><code>producer.py</code></p>
+
+<pre><code class="language-python">import time
+import redis
+
+cnt = 1
+conn = redis.Redis()
+
+while True:
+  conn.lpush('queue', cnt)
+  cnt = cnt + 1
+  time.sleep(1)
+</code></pre>
+
+<p><code>consumer.py</code></p>
+
+<pre><code class="language-python">import datetime
+import redis
+
+conn = redis.Redis()
+
+while True:
+  info = conn.blpop('queue')
+  print('received info: ', info, 'at', datetime.datetime.now())
+</code></pre>
+
+<p><strong>output</strong></p>
+
+<pre><code>received info:  (b'queue', b'1') at 2019-03-31 18:06:56.335450
+received info:  (b'queue', b'2') at 2019-03-31 18:06:57.337337
+received info:  (b'queue', b'3') at 2019-03-31 18:06:58.339141
+received info:  (b'queue', b'4') at 2019-03-31 18:06:59.341055
+received info:  (b'queue', b'5') at 2019-03-31 18:07:00.343051
+</code></pre>
+
+<p>在两个终端里分别先后执行 <code>consumer.py</code> 与 <code>producer.py</code>，大致就能看到这样的输出了 。</p>
+
+<h3 id="安装-celery">安装 Celery</h3>
+
+<p><code>Redis</code> 提供了消息中间件，而 <code>Celery</code> 的作用就是完善的异步任务管理机制 。事实上 Celery 还可以使用 <code>RabbitMQ</code> 等其他产品做为任务传输中间件，也能使用 memcached、许多 SQL 数据库以及很多其他产品来存储执行结果 —— 我们这里就使用 Redis 。</p>
+
+<p>安装 Celery 也很简单：<code>pip install celery</code>；但注意如果你使用 Python 3.7 或以上版本，你应该从 <a href="https://github.com/celery/celery/">GitHub 仓库</a> 安装开发版本 <code>pip install git+https://github.com/celery/celery.git</code> 。</p>
+
+<h2 id="具体实现">具体实现</h2>
+
+<h3 id="flask-项目结构">Flask 项目结构</h3>
+
+<pre><code>demo
+├── __init__.py
+└── task.py
+</code></pre>
+
+<p>任务队列主要的功能有两个：创建异步任务与检查任务运行状态 。因此相应地，我们在 <code>__init__.py</code> 中创建了 Flask app 与两个路由：<code>/create</code> 与 <code>/get/&lt;task_id&gt;</code>，为这两个功能提供了 API 接口；在 <code>task.py</code> 外中则创建了 Celery app 并定义了一个需要较长时间执行的任务 。</p>
+
+<p>在 demo 文件夹所在的目录下按照如下步骤即可启动 Flask app：</p>
+
+<pre><code class="language-bash">export FLASK_APP=demo
+export FLASK_ENV=development
+flask run
+</code></pre>
+
+<p>在 demo 文件夹所在的目录下启动 Celery app（<code>-A</code> 指定 app 对象位置，<code>-l</code> 指定日志输出等级）：</p>
+
+<pre><code>celery worker -A demo.task -l info
+</code></pre>
+
+<h3 id="创建-celery-应用">创建 Celery 应用</h3>
+
+<p><code>task.py</code></p>
+
+<pre><code class="language-python">import time
+from celery import Celery
+
+app = Celery('default')
+app.conf.update({
+  'broker_url': 'redis://localhost:6379',
+  'enable_utc': True,
+  'result_backend': 'redis://localhost:6379',
+  'timezone': 'Asia/Shanghai',
+})
+
+@app.task
+def long_task(span:int):
+  time.sleep(span)
+  return True
+</code></pre>
+
+<p>首先是创建 Celery 实例，实例最好命名为 app，因为 Celery 默认从指定模块（这里是 <code>demo.task</code>）中加载 <code>app</code> 对象来启动 。</p>
+
+<p>其次就是配置 。<code>broker_url</code> 指定了任务传输的中间件，<code>result_backend</code> 指定了于何处存储任务执行的结果 ；<code>enable_utc</code> 与 <code>timezone</code> 让 Celery 使用本地时间运行任务 。</p>
+
+<p>最后通过装饰器 <code>@app.task</code> 创建任务模板 。这里是定义了一个接受整型参数并阻塞相应秒后返回 <code>True</code> 的任务模板（其实就是一个 <code>callable</code> 对象），我们通过这个模板来创建实际的任务 。</p>
+
+<h3 id="web-api-接口">Web API 接口</h3>
+
+<p><code>__init__.py</code></p>
+
+<pre><code class="language-python">from flask import Flask
+from .task import long_task
+
+app = Flask(__name__)
+
+@app.route('/create')
+def create():
+  task_id = long_task.delay(10).task_id
+  return task_id
+
+@app.route('/get/&lt;task_id&gt;')
+def get(task_id):
+  result = long_task.AsyncResult(task_id)
+  return result.status
+</code></pre>
+
+<ul>
+<li><p>创建任务</p>
+
+<p>通过 <code>long_task.delay</code> 即可创建异步任务，你只需传入参数，剩下的事 Celery 会替你处理 。上例中这个任务会阻塞 10 秒后返回 <code>True</code> 。注意 <code>long_task.delay</code> 返回的是一个 <code>AsyncResult</code> 对象，这个对象代表了一个异步任务的结果 。它有一系列有用的属性，例如：</p>
+
+<ul>
+<li><code>task_id</code>：此任务的 uuid</li>
+<li><code>status</code> / <code>state</code>：任务的状态，有 PENDING，FAILED，SUCCESS 等</li>
+<li><code>result</code> / <code>info</code>：任务执行的返回结果，未完成时为 <code>None</code></li>
+</ul>
+
+<p>更详细的属性/方法列表可以查看<a href="http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.result.AsyncResult">官方文档</a> 。这里我们返回了 <code>task_id</code> 以便后续查看 。</p></li>
+
+<li><p>查看任务执行状态</p>
+
+<p>你可能会想要把 <code>AsyncResult</code> 对象保存在 Flask 的 <code>session</code> 字典中一边后续调用，但遗憾的是由于 <code>session</code> 不是真正的 Python 字典且 <code>AsyncResult</code> 不能被直接 JSON 序列化，所以你不能这么做（这涉及到 <code>session</code> 的实现原理） 。但你可以保存 <code>task_id</code>（因为是字符串），然后再通过<code>long_task.AsyncResult(task_id)</code> 来获取 。当然我们此处并没有存进 <code>session</code>（用户记不住？管他呢/doge）。</p></li>
+</ul>
+
+<p>最后，注意每一个任务都应该在完成后释放其占用的资源（通过 <code>result.forget()</code>，这里 <code>result</code> 也是 <code>AsyncResult</code> 对象）。你也应该在配置中设置 <code>result_expires</code> 字段，防止有漏网之鱼 。这点我在 demo 中没处理好（懒）。</p>
+
+<h3 id="测试结果">测试结果</h3>
+
+<p>按照上面在项目结构中提到的方法分别启动 Flask 与 Celery（当然还有 Redis），然后在命令行通过 <code>curl</code> 测试：</p>
+
+<pre><code class="language-bash">$ curl localhost:5000/create
+a59c7e0e-cba6-4b78-87b0-b24dca90c746
+$ curl localhost:5000/get/a59c7e0e-cba6-4b78-87b0-b24dca90c746
+SUCCESS
+</code></pre>
+
+<p>我手速不够快，所以没捕捉到中间的 PENDING 。Celery 日志会也有类似以下输出：</p>
+
+<pre><code>[2019-03-31 19:45:20,092: INFO/MainProcess] Connected to redis://localhost:6379//
+[2019-03-31 19:45:20,104: INFO/MainProcess] mingle: searching for neighbors
+[2019-03-31 19:45:21,134: INFO/MainProcess] mingle: all alone
+[2019-03-31 19:45:21,154: INFO/MainProcess] celery@manjaro ready.
+[2019-03-31 19:45:46,264: INFO/MainProcess] Received task: demo.task.long_task[a59c7e0e-cba6-4b78-87b0-b24dca90c746]
+[2019-03-31 19:45:56,278: INFO/ForkPoolWorker-4] Task demo.task.long_task[a59c7e0e-cba6-4b78-87b0-b24dca90c746] succeeded in 10.012213802998303s: True
+</code></pre>
+
+<p>任务确实在 10 秒后完成并返回了 True 。</p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/celery/">celery</a>
+                
+                <a href="/tags/flask/">flask</a>
+                
+                <a href="/tags/python/">python</a>
+                
+                <a href="/tags/redis/">redis</a>
+                
+                <a href="/tags/task-queue/">task queue</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

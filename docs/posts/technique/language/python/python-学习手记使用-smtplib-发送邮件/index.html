@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="高中时期就用 Python 写过一个邮件发送脚本，但当时的逻辑处理得相当凌乱 。这次利用了一个周末晚上总结规整了一下 smtplib 与 email 模块的用法，并写了一个鲁棒性比较强且支持模板填充的邮件群发脚本 。这篇博客就简单记录一下 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/language/python/python-%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%BD%BF%E7%94%A8-smtplib-%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/"/>
+
+  
+
+  <title>Python 学习手记：使用 smtplib 发送邮件 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/language/python/python-%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%BD%BF%E7%94%A8-smtplib-%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/'>Python 学习手记：使用 smtplib 发送邮件</a></h2>
+          <span class="date">2019.01.19</span>
+        </div>
+        <div class="post_content markdown"><p>高中时期就用 Python 写过一个邮件发送脚本，但当时的逻辑处理得相当凌乱 。这次利用了一个周末晚上总结规整了一下 <code>smtplib</code> 与 <code>email</code> 模块的用法，并写了一个鲁棒性比较强且支持模板填充的<a href="https://gist.github.com/queensferryme/fac00cb791b7d53e49ad12a72b19d754">邮件群发脚本</a> 。这篇博客就简单记录一下 。</p>
+
+<h2 id="启用-smtp-服务">启用 SMTP 服务</h2>
+
+<p>首先我们必须了解，<code>SMTP</code> 是一种邮件发送协议（Simple Mail Transfer Protocol）。我们在本地使用 python 脚本作为客户端发送请求，还需要有一个服务器来处理这些 SMTP 请求 。你可以选择自己搭建一个 SMTP 服务器，亦或是使用第三方邮件服务提供商的 SMTP 服务 —— 为了方便起见，我选择了后者，因为几乎所有邮箱（gmail，qq，126）等都给用户提供免费 SMTP 服务 。一般来说你可以在<strong>设置</strong>里找到开启 SMTP 服务的选项；如果对此过程有问题，请在搜索引擎上查找对应邮箱的设置方法 。</p>
+
+<p>如果一切顺利，你现在应该有一对用户名+密码用来认证登录远程 SMTP 服务器 。然后我们就可以尝试连接并登录了：</p>
+
+<pre><code class="language-python">from smtplib import SMTP, SMTPException
+
+config = {
+    'host': 'smpt.126.com',
+    'port': 25,
+    'user': 'your-user-name',
+    'passwd': 'your-pass-word'
+}
+
+try:
+	server = SMTP(config['host'], config['port'])
+	server.login(config['user'], config['passwd'])
+except SMTPException:
+    print('ERROR: login failed')
+else:
+    print('INFO: login success')
+</code></pre>
+
+<p>在我的情况下，<code>user</code> 字段就是我的 126 邮箱帐号，端口号 <code>port</code> 一般来说都是 25（如果使用 SSL 连接可能会是 465，具体情况请查看相关文档）。</p>
+
+<h2 id="普通文本邮件">普通文本邮件</h2>
+
+<p>登录后就可以开始发送邮件了 。首先从最简单的纯文本文件说起：</p>
+
+<pre><code class="language-python">config['sender'] = 'sender-email-addr'
+config['receiver'] = 'receiver-email-addr'
+config['message'] = '''
+Subject: Title
+
+Python SMTP Test Mail.
+'''
+
+try:
+	server.send_mail(config['sender'], config['receiver'], config['message'])
+except SMTPExecption as error:
+    print('ERROR: mail failed to send', error)
+else:
+    print('INFO: mail successfully sent')
+</code></pre>
+
+<p>注意 <code>Subject</code> 头部字段后连续两个换行是必须的 。如果一切正常，<code>config['receiver']</code> 的邮箱就会收到一封标题为 <code>Title</code>，正文内容为 <code>Python SMTP Test Mail</code> 的邮件 —— 但是大多邮箱服务商现在都有垃圾邮件过滤机制，你可能会在 error 里看见类似 SPAM 这样的信息 —— 这种情况下你可以选择将邮件内容改的真实一些或是先发送给自己，这都可以避免垃圾邮件过滤 。</p>
+
+<p>我们还可以使用 <code>email</code> 模块来更优雅的构建邮件，例如：</p>
+
+<pre><code class="language-python">from email.header import Header
+from email.mime.text import MIMEText
+
+message = MIMEText('Python SMTP Test Mail', 'plain', 'utf-8')
+message['Subject'] = Header('Title', 'utf-8')
+message['From'] = Header(config['sender'], 'utf-9')
+message['To'] = Header(config['receiver'], 'utf-8')
+server.send_mail(config['sender'], config['receiver'], message.as_string())
+</code></pre>
+
+<h2 id="html-富文本邮件">HTML 富文本邮件</h2>
+
+<p>含有 HTML 内容的邮件同样可以使用 <code>MIMEText</code> 来构建，只不过我们需要吧类型从 <code>text/plain</code> 修改为 <code>text/html</code> 。例如：</p>
+
+<pre><code class="language-python">config['message'] = '''
+&lt;h1&gt;WELCOME&lt;/h1&gt;
+&lt;p&gt;we sincerely invite you to join our party.&lt;/p&gt;
+&lt;p&gt;your entrance id is &lt;code&gt;0021&lt;/code&gt;.&lt;/p&gt;
+'''
+message = MIMEText(config['message'], 'html', 'utf-8')
+</code></pre>
+
+<p>之后的操作基本相似 。</p>
+
+<p>需要注意的是，如果你想向邮件的 HTML 里添加图片，直接使用外链大多数情况下是不行的；因为处于安全考量，邮件服务商一般会屏蔽这些带有外链的图片 。我们需要从本地以一种特殊方式添加图片资源 。</p>
+
+<pre><code class="language-python">from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+
+config['message'] = config['message'] + '&lt;img src=&quot;cid:0&quot;/&gt;'
+message = MIMEMultipart()
+message.attach(MIMEText(config['message'], 'html', 'utf-8'))
+with open('invitation.png', 'rb') as fin:
+    image = MIMEImage(fin.read(), _subtype='png')
+image.add_header('Content-ID', '0')
+message.attach(image)
+</code></pre>
+
+<p>图片的链接应被写作 <code>cid:&lt;cid&gt;</code> 的形式，然后对应的图片资源要加入 <code>Content-ID:&lt;cid&gt;</code> 头部后附加到 <code>message</code> 中 。</p>
+
+<h2 id="为邮件添加附件">为邮件添加附件</h2>
+
+<p>添加附件并不困难，你同样只需要向一个 <code>Multipart</code> 对象中添加相应的附件即可：</p>
+
+<pre><code class="language-python">from email.mime.base import MIMEBase
+from encoders import encode_base64
+
+att = MIMEBase('application', 'octet-stream')
+att.add_header('Content-Disposition', 'attachment;filename=invitation.png')
+with open('invitation.png', 'rb') as fin:
+    att.set_payload(fin.read())
+encode_base64(att)
+message.attach(att)
+</code></pre>
+
+<p>附件头部中的 <code>filenam</code> 字段才是邮箱里显示的附件名，这意味着你可以让一个文件看起来像其他类型的文件 。</p>
+
+<h2 id="使用-ssl-加密连接">使用 SSL 加密连接</h2>
+
+<p>现在是 https 的时代，我们的 smtp 同样可以使用 ssl 来加密 。加密方式也相当简单：</p>
+
+<pre><code class="language-python">from ssl import create_default_context
+
+server = SMTP(config['host'], config['port'])
+server.starttls(context=create_default_content())
+</code></pre>
+
+<p>在 <code>starttls</code> 之后的连接就都是加密的了，这能有效地防止你的 SMTP 服务密码泄漏 。</p>
+
+<hr />
+
+<p>参考文献：</p>
+
+<ul>
+<li><a href="https://realpython.com/python-send-email/#make-a-csv-file-with-relevant-personal-info">Real Python: Sending Emails With Python</a></li>
+<li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432005226355aadb8d4b2f3f42f6b1d6f2c5bd8d5263000">廖雪峰 python 教程：SMTP 发送邮件</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/python/">python</a>
+                
+                <a href="/tags/smtp/">smtp</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

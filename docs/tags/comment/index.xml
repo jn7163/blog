@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>comment on Queensferry&#39;s Blog</title>
+    <link>/tags/comment/</link>
+    <description>Recent content in comment on Queensferry&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 02 Apr 2019 15:47:24 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/comment/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>与抽象共存：来自计算机科学的感想</title>
+      <link>/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/</link>
+      <pubDate>Tue, 02 Apr 2019 15:47:24 +0000</pubDate>
+      
+      <guid>/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/</guid>
+      <description>&lt;p&gt;抽象（Abstraction）是计算机科学中一个常见的概念 —— 在生活中也很常见 。但我们在日常生活中提及抽象时，往往是为了描述某个事物复杂而难以理解，却往往忽略了抽象背后的统一性 。私将抽象理解为“从一系列复杂的具体事物中抽离出有意义的统一形象”，事物的复杂性是抽象存在的土壤 。事先声明，写这篇博客并非为了从技术的角度阐述计算机科学中抽象的概念，而是单纯的有感而发 —— 是因为我在为时尚短的大学生活中发现的抽象能力的普遍缺乏 。这让我感到不安 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>《流浪地球》豆瓣热评数据分析：热点、观点与反驳</title>
+      <link>/posts/life/comment/%E6%B5%81%E6%B5%AA%E5%9C%B0%E7%90%83%E8%B1%86%E7%93%A3%E7%83%AD%E8%AF%84%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%83%AD%E7%82%B9%E8%A7%82%E7%82%B9%E4%B8%8E%E5%8F%8D%E9%A9%B3/</link>
+      <pubDate>Wed, 20 Feb 2019 23:57:26 +0000</pubDate>
+      
+      <guid>/posts/life/comment/%E6%B5%81%E6%B5%AA%E5%9C%B0%E7%90%83%E8%B1%86%E7%93%A3%E7%83%AD%E8%AF%84%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%83%AD%E7%82%B9%E8%A7%82%E7%82%B9%E4%B8%8E%E5%8F%8D%E9%A9%B3/</guid>
+      <description>&lt;p&gt;我是在大年初二（即 2 月 6 日）观看的&lt;a href=&#34;https://movie.douban.com/subject/26266893&#34;&gt;《流浪地球》&lt;/a&gt;，但我克制住了立马写影评的冲动 —— 一是因为影片前期宣传口碑火爆，我担心自己受到影响（事实上的确或多或少受到了影响）而带有偏见；二是我有预感这部电影会引起较大的争议，只是没想到围绕豆瓣爆发了一场如此激烈的口水仗 。2 月 14 日（即情人节）这天，我利用闲暇的&lt;strong&gt;单身时间&lt;/strong&gt;编写 python 程序抓取了&lt;a href=&#34;https://movie.douban.com/subject/26266893/comments?start=0&amp;amp;limit=20&amp;amp;sort=new_score&amp;amp;status=P&#34;&gt;豆瓣短评热评&lt;/a&gt;中好、中、差评各 500 条并进行了数据分析与可视化，试图从一个更客观的角度解析这部争论不休的电影；而这些数据也的确为我提供了一些新颖的视角，我稍后会在文章中分析 。但首先声明：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;我认为尽管《流浪地球》这部电影存在诸多明显的缺陷，但总体来说&lt;strong&gt;瑕不掩瑜&lt;/strong&gt;，不失为国产科幻电影的一个良好开端；&lt;/li&gt;
+&lt;li&gt;观影体验因人而异，再优秀的电影同样也会有人不喜欢 。我尊重每个人对《流浪地球》&lt;strong&gt;理智&lt;/strong&gt;的评价，即使你认为这部电影烂到透顶 。也欢迎你在下方评论提出不同观点；&lt;/li&gt;
+&lt;li&gt;尽管我不认同豆瓣上的某些低分评价中的观点，但我认同他们有逻辑条理的分析 。部分人情绪化地对一切反对声音发起谩骂式攻击，这样做与他/她们自己口中的水军又有何区别？&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;本文主要是影评，对技术部分感兴趣的朋友可以自行查看 &lt;a href=&#34;https://gist.github.com/queensferryme/5cbdc167126345416e106e0ec2ffa3be&#34;&gt;GitHub Gist&lt;/a&gt; 。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

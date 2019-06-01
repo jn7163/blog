@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="抽象（Abstraction）是计算机科学中一个常见的概念 —— 在生活中也很常见 。但我们在日常生活中提及抽象时，往往是为了描述某个事物复杂而难以理解，却往往忽略了抽象背后的统一性 。私将抽象理解为“从一系列复杂的具体事物中抽离出有意义的统一形象”，事物的复杂性是抽象存在的土壤 。事先声明，写这篇博客并非为了从技术的角度阐述计算机科学中抽象的概念，而是单纯的有感而发 —— 是因为我在为时尚短的大学生活中发现的抽象能力的普遍缺乏 。这让我感到不安 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/"/>
+
+  
+
+  <title>与抽象共存：来自计算机科学的感想 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/'>与抽象共存：来自计算机科学的感想</a></h2>
+          <span class="date">2019.04.02</span>
+        </div>
+        <div class="post_content markdown"><p>抽象（Abstraction）是计算机科学中一个常见的概念 —— 在生活中也很常见 。但我们在日常生活中提及抽象时，往往是为了描述某个事物复杂而难以理解，却往往忽略了抽象背后的统一性 。私将抽象理解为“从一系列复杂的具体事物中抽离出有意义的统一形象”，事物的复杂性是抽象存在的土壤 。事先声明，写这篇博客并非为了从技术的角度阐述计算机科学中抽象的概念，而是单纯的有感而发 —— 是因为我在为时尚短的大学生活中发现的抽象能力的普遍缺乏 。这让我感到不安 。</p>
+
+<h3 id="我们无法抽象">我们无法抽象</h3>
+
+<p>我的不安自大学以来就一直存在，在最近开设了<em>计算机组成与体系结构</em> 这门课后达到了高峰，因此思考一番过后决定写这篇博客 。让我感到不安的是来请教我的同学的问题 —— 他/她们知道磁盘上的磁道、磁道上的扇区，知道机械臂如何移动读写磁头，但他/她们宁愿在每一个无关紧要的细节上钻牛角尖，也拒绝相信将这些功能组合起来能形成磁盘 。</p>
+
+<p>这样的学习习惯似乎与我们的教育方式有关 。我们的考试制度素来要求我们在细节上一丝不苟：我仍能记得高中语文试题如何试图<em>肢解</em> 诗歌与散文，并从零散的语句中榨干最后一点过度解读的意象 —— 我是厌恶这样的阅读的 。而时至今日在大学中，似乎仍有很多人热衷于在每一个细节上皓首穷经，而无法系统地观察抽象的整体 。</p>
+
+<p>与抽象相对的是具体（Concrete），而<strong>具体正是我们之所擅长</strong> 。我们向来被告诫要脚踏实地，务实而非务虚 。我们擅长解决具体的问题，事实上我们能运用现有的框架出色地解决问题 —— 我们的孩子脚踏实地勤学苦练，能在奥数、钢琴、绘画等许多领域取得他国同龄人难以望其项背的成绩 。但最新的科技进展绝大多数依然并非来自我国 。有人将之归结为创新的缺失，而我想将创新的缺失归结为抽象的缺失 —— 归结为我们无法从现有的繁杂的知识体系中抽象出新的框架 。这是最令我感到不安的 。</p>
+
+<h3 id="我们为何需要抽象">我们为何需要抽象</h3>
+
+<p>在计算机科学领域，你会发现抽象的概念无所不在；而且正如它们的名字所暗示的那样，这些抽象真的很抽象 。在观看（好像是）宾大的计算机科学基础课程系列视频的时候，最令我印象深刻的一个词就是抽象层（Layer of Abstraction），因为它在视频中几乎每十分钟就会出现一次 。视频这样将计算机组织分解为多个抽象层：从最基础的电路开始，再到逻辑门，再到全加/半加器等小型部件，再到算术逻辑单元（ALU），再到最后的中央处理器（CPU）等；每一层都是对下层复杂体系的抽象 。</p>
+
+<p>上述关于计算机结构的例子一定程度上阐述了：抽象就是从现有的复杂系统中抽离出可用的框架 。从基础电路到逻辑门，从逻辑门到小型集成部件，层层抽象精确地依赖于下一层而为上一层提供可用的新的框架，而这新框架在当时很可能就是场技术革新 。我们会将从大量逻辑门的复杂连接中抽象出加法器的人称为<em>创造者</em> ，而将使用加法器做计算的人称为使用者 。我们需要抽象的能力，因为我们需要创新的能力；我们需要创新的能力，因为我们需要更多创造者而非使用者；我们需要更多乔布斯，而不是更多富士康 。</p>
+
+<p>我试图以计算机科学为例引入抽象的意义 。但这篇博客探讨的终究不是技术问题，而是抽象这一概念在技术之外的意义 。在现有的基础知识体系短期内不会有重大更新的情况下，抽象与创新是息息相关的；<strong>如何从已知的混沌中抽象出新的框架将至关重要</strong> 。</p>
+
+<hr />
+
+<p>最后，我不想讨论你/我应如何学会抽象 —— 因为我不知道答案，也暂时没有建设性意见 。但或许，抽象的能力本身就来自对一系列处理具体的能力的抽象 —— 这是个<em>递归玩笑</em> 。</p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/comment/">comment</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

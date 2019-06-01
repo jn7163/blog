@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="Docker 是目前很流行的应用容器化技术；它能以小得多的资源占用实现系统级别的虚拟化，达到类似虚拟机的效果。使用 Docker 部署自己的应用十分方便而强大：你既不需要费心于各种与应用无关的繁琐配置；又同时拥有对应用高度的自由化管理权限。这篇博客记录一下我初步学习使用 Docker 的成果。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/web/devops/docker-%E5%88%9D%E6%8E%A2%E9%83%A8%E7%BD%B2-mysql-%E4%B8%8E-flask-%E6%9C%8D%E5%8A%A1/"/>
+
+  
+
+  <title>Docker 初探：部署 MySQL 与 Flask 服务 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/web/devops/docker-%E5%88%9D%E6%8E%A2%E9%83%A8%E7%BD%B2-mysql-%E4%B8%8E-flask-%E6%9C%8D%E5%8A%A1/'>Docker 初探：部署 MySQL 与 Flask 服务</a></h2>
+          <span class="date">2018.10.30</span>
+        </div>
+        <div class="post_content markdown"><p>Docker 是目前很流行的应用容器化技术；它能以小得多的资源占用实现系统级别的虚拟化，达到类似虚拟机的效果。使用 Docker 部署自己的应用十分方便而强大：你既不需要费心于各种与应用无关的繁琐配置；又同时拥有对应用高度的自由化管理权限。这篇博客记录一下我初步学习使用 Docker 的成果。</p>
+
+<h2 id="安装-docker">安装 Docker</h2>
+
+<p>在 Arch Linux 上，安装 Docker 十分简单。你只需要运行<code>sudo pacman -S docker</code>即可获得一个完整的 Docker 应用。关于其他系统的安装信息可以参见 <a href="http://www.runoob.com/docker/docker-tutorial.html">Docker 教程</a> 。</p>
+
+<p>初步安装完 Docker 后一个比较常见的问题就是 Docker 运行权限 。许多用户会发现每次运行任何一条 Docker 指令都需要<code>sudo</code>提取超级用户权限实在是太过低效恼人。对此你可以创建一个特殊的<code>docker</code>用户组，这个用户组里的成员将拥有无需<code>sudo</code>直接运行的权限。具体操作如下：</p>
+
+<pre><code class="language-bash">sudo groupadd docker
+sudo usermod -aG docker $USER
+</code></pre>
+
+<p>完成这两条指令后你就能自由地以非超级用户身份运行 Docker 啦 。如果你需要更详细的教程，请参考<a href="https://docs.docker.com/install/linux/linux-postinstall/">官方文档</a> 。</p>
+
+<h2 id="基本概念">基本概念</h2>
+
+<p>Docker 中的两个最主要的概念就是镜像（Image）与容器（Container）；这两者之间的关系有些类似于面向对象编程语言里类与对象的关系。你可以通过镜像来创建一个容器实例，而这个容器内部就搭载着你所需要的 app 。由于 DockerHub 上大量热心的贡献者，我们在部署许多应用时都有可参照甚至开箱即用的镜像。下面就来尝试运行一个最简单的 Hello World 应用：</p>
+
+<pre><code class="language-bash">docker pull hello-world
+docker run hello-world
+</code></pre>
+
+<p>如果运行成功，你就能看到来自 Docker 的问候 。你可以通过<code>docker images</code>命令来查看你本地所有镜像，通过<code>docker ps -a</code>来查看本地所有（无论是否仍在运行）容器。</p>
+
+<h2 id="运行容器">运行容器</h2>
+
+<p>接下来我尝试使用 Docker 容器化技术部署一个相对完整可用的 MySQL 数据库。我们当然不需要从头构建一个 MySQL 镜像，只需使用 DockerHub 上的官方镜像即可。具体操作如下：</p>
+
+<pre><code class="language-bash">docker pull mysql:latest
+docker run -p 3000:3306 --name mysql-dev -e MYSQL_ROOT_PASSWORD=123456 -d mysql:latest
+</code></pre>
+
+<p>一个完整可用的数据库已经搭建起来了！解释一下这两条指令其中的具体流程：首先我们从 DockerHub 上拉取了一份 MySQL 镜像；这份镜像的标签是<code>latest</code>，即表明这是最新版本的 MySQL 镜像（你当然也可以使用其他版本标签）。随后我们就通过<code>docker run &lt;image:tag&gt;</code>指令来创建一个容器，我们使用：</p>
+
+<ul>
+<li>-p 绑定端口。由于 Docker 容器与宿主机的环境是相对隔离的，我们必须将相应的端口暴露出来才能连接上 MySQL 服务器 。这里我们将容器内部的 3306 端口（MySQL 的默认端口）与宿主机的 3000 端口绑定在一起，这样你就能通过访问宿主机的 3000 端口操作数据库 。</li>
+<li>--name 给容器命名。这里我们将容器命名为 mysql-dev；在生产环境中我显然会采用更严格的数据库密码以及其他措施来保证安全。</li>
+<li>-e 指定环境变量。这里我们设置了 MySQL 的密码。</li>
+<li>-d 使容器在后台（daemon）运行。</li>
+</ul>
+
+<p>这样一个完整的 MySQL 服务器就在容器内运行起来了。</p>
+
+<h2 id="维护容器">维护容器</h2>
+
+<h3 id="端口映射">端口映射</h3>
+
+<p>上一个容器的一个主要安全问题就是我们将容器内部端口映射到了宿主机的公网 IP 上。我们可以通过以下命令来查看容器的端口映射：</p>
+
+<pre><code class="language-bash">docker port mysql-dev
+# 3306/tcp -&gt; 0.0.0.0:3000
+</code></pre>
+
+<p>对于生产数据库，我们可能并不想在公网上开放它的端口 。在这种情况下，我们可以用<code>docker run -p 127.0.0.1:3000:3306 -d mysql:latest</code>来将端口映射到宿主机的 localhost 上。</p>
+
+<h3 id="容器网络">容器网络</h3>
+
+<p>在许多应用场景下，我们将应用与数据库分别部署在两个容器内。这时候想要使得应用能够正常地访问数据库，最优雅的解决方案就是使用 network 。我们可以创建一个网络将容器联系起来，容器之间可以互相通过容器名来代替 IP 访问。这里的容器名类似与 localhost，是一个记录在 host 文件里的特殊的地址。</p>
+
+<p>假设现在我有两个容器：生产数据库<code>mysql</code>与应用容器<code>app</code>。我们可以通过以下命令来创建网络并连接容器：</p>
+
+<pre><code class="language-bash"># create a docker network
+docker network create app
+# connect to the docker network
+docker network connect app mysql
+docker network connect app app
+</code></pre>
+
+<p>这是<code>app</code>容器内就可以通过<code>&lt;user&gt;:&lt;passwd&gt;@mysql:&lt;port&gt;/&lt;database&gt;</code>来访问数据库。<strong>注意：这里的<code>&lt;port&gt;</code>是指容器内部的端口，而非映射到宿主机上的端口。</strong></p>
+
+<p>你也可以在启动容器时加入<code>--network=&lt;name&gt;</code>参数来将容器直接连接到网络内。</p>
+
+<h3 id="目录挂载">目录挂载</h3>
+
+<p>如果你有一个应用包含上传功能，而这个应用部署在 docker 容器内部；那么正常情况下用户所上传的文件会被存储在 docker 容器内部的文件系统里。你当然可以用<code>docker cp &lt;container&gt;:&lt;volumn&gt; &lt;volumn&gt;</code>命令来讲容器内部的文件拷贝到宿主机上 —— 但更优雅的做法是使用<code>-v</code>参数来挂载目录。例如你现在有一个应用的镜像，你可以这样在启动容器时挂载目录：</p>
+
+<pre><code class="language-bash">docker run -v /uploads:/uploads -d app
+</code></pre>
+
+<p>这样宿主机上<code>/uploads</code>目录里的任何变更都会反映在容器内的<code>/uploads</code>目录上，反之亦然。</p>
+
+<h2 id="创建镜像">创建镜像</h2>
+
+<p>对于一个持续开发的 app，我们的容器也需要持续更新 。所以每次 app 更新时，我们都需要重新构建镜像并启动容器。创建镜像的方式大体有两种：手动修改（直接模改原有镜像并提交）和使用 Dockerfile 自动构建。下面逐一介绍。</p>
+
+<h3 id="手动修改">手动修改</h3>
+
+<p>假设我们手里有一个 python:3.5 镜像，而现在我们需要一个加载了一些第三方依赖库的 mypy 镜像。我们可以使用<code>docker run -it python:3.5 /bin/bash</code> 命令来交互式地操作容器内部系统；这里的 <code>-i</code> 参数表明容器从宿主机的标准输入接受输入，<code>-t</code> 参数表明容器 会打开一个伪终端，<code>/bin/bash</code> 是我们要运行的命令（亦即 entrypoint ）。假设我们在容器内进行了如下操作：</p>
+
+<pre><code class="language-bash">pip install Flask Flask-SQLAlchemy Flask-RESTful
+exit
+</code></pre>
+
+<p>安装完以上依赖库，我们就可以提交容器使之成为新的镜像：<code>docker commit -m=&quot;mypy&quot; -a=&quot;queensferry&quot; d45f3e6fa9e8 mypy:latest</code> 。其中<code>d45f3e6fa9e8</code>是你的容器 ID，你可以通过<code>docker ps -a</code>来查看之前进行了更改的容器的 ID 。</p>
+
+<p>这时再运行<code>docker images</code> 命令，你就能看到你的 <code>mypy:latest</code> 镜像。</p>
+
+<h3 id="自动构建">自动构建</h3>
+
+<p>但是每次更新都重头构建镜像实在太过于繁琐 。一般而言，我们更多使用 Dockerfile 进行自动构建。下面贴出我为自己的 <a href="https://github.com/queensferryme/cobyr">Flask 应用</a>编写的简单的 Dockerfile 作为入门参考，需要完整教程的可以参考<a href="https://docs.docker.com/engine/reference/builder/">官方文档</a> 。</p>
+
+<pre><code class="language-dockerfile">FROM python:3.5
+WORKDIR /
+
+COPY cobyr cobyr
+COPY requirements.txt requirements.txt
+COPY boot.sh boot.sh
+# COPY ~/.pip/ /root/.pip
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN pip install gunicorn
+RUN chmod +x boot.sh
+
+EXPOSE 5000
+ENTRYPOINT [ &quot;./boot.sh&quot; ]
+</code></pre>
+
+<p>简单解释这些指令：</p>
+
+<ul>
+<li><p>FROM 指令指定了源镜像 。我们大多情况下仍然要通过模改现存的镜像来创建新镜像。</p></li>
+
+<li><p>WORKDIR 指令指定了镜像内部的默认工作目录。以下所有指令均已这个目录为上下文。</p></li>
+
+<li><p>COPY 指令将宿主机上的文件（夹）拷贝到镜像内部对应文件（夹）。</p></li>
+
+<li><p>RUN 指令能运行一条命令。</p></li>
+
+<li><p>EXPOSE 指令指定了镜像内部允许暴露映射到宿主机上的端口。</p></li>
+
+<li><p>ENTRYPOINT 指定了 <code>docker run &lt;image:tag&gt;</code> 时的默认命令，你当然也可以用 <code>/bin/bash</code> 等其他命令代替入口点。</p></li>
+</ul>
+
+<p>在你的应用目录下创建 Dockerfile 并执行 <code>docker build -t app:latest .</code> ，docker 就会根据当前目录下的 Dockerfile 构造出名为 <code>app:latest</code> 的全新镜像。</p>
+
+<h2 id="小结">小结</h2>
+
+<p>突然想扯一些与技术无关的事。说回来这是我上大学以来的第一篇博客，大学生活比想象中的忙碌很多。虽然这是第一次自己完全对自己负责，但上进心和自主性反倒前所未有的被激发了 —— 不需要再应付老师或家长或不感兴趣的琐事，只是全身心地为自己的梦想投入。细细想来，中国的高中教育所缺乏的是否就是这种为自己负责的学习机制呢？</p>
+
+<p>以上。</p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/docker/">docker</a>
+                
+                <a href="/tags/flask/">flask</a>
+                
+                <a href="/tags/mysql/">mysql</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

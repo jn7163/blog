@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="这篇博客的标题不是很直观 —— 事实上就是实现了类似百度百科（*以及本博客*）的导航栏效果 。可以这样描述核心功能：
+ 首先，将正文内容按 H1 ~ H6 解析成递归的树形结构数据并映射到导航栏 其次，在用户点击导航栏时将正文平滑滚动到相应锚点 最后，当正文内容滚动时同步更新导航栏（高亮活动元素）  项目的全部源代码与效果图都在 GitHub 上，欢迎参观 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/"/>
+
+  
+
+  <title>基于 Vue.js 实现递归树形导航栏组件以及页面锚点同步滚动 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/'>基于 Vue.js 实现递归树形导航栏组件以及页面锚点同步滚动</a></h2>
+          <span class="date">2018.12.22</span>
+        </div>
+        <div class="post_content markdown"><p>这篇博客的标题不是很直观 —— 事实上就是实现了类似百度百科（*以及本博客*）的导航栏效果 。可以这样描述核心功能：</p>
+
+<ul>
+<li>首先，将正文内容按 H1 ~ H6 解析成递归的树形结构数据并映射到导航栏</li>
+<li>其次，在用户点击导航栏时将正文平滑滚动到相应锚点</li>
+<li>最后，当正文内容滚动时同步更新导航栏（高亮活动元素）</li>
+</ul>
+
+<p>项目的全部源代码与效果图都在 <a href="https://github.com/queensferryme/treeview">GitHub</a> 上，欢迎参观 。</p>
+
+<h2 id="问题分析">问题分析</h2>
+
+<p>初步分析发现存在一下技术上的问题需要解决：</p>
+
+<ul>
+<li>Vue 组件递归渲染：即一个组件的 template 中可以包含它自身 。由于树形导航栏的父节点与子节点在结构上是基本相似的，所以我使用递归渲染来创建导航栏；</li>
+<li>将 DOM 中的 H1 ～ H6 元素依照原有的顺序解析成嵌套的树形结构数据 。这些数据会被直接反馈给导航栏组件以进行渲染；</li>
+</ul>
+
+<p>这两个问题是初期稍加思索就能想到的主要难点 。在此次小项目的开发过程中还有许多零散的小问题，会在后文结合语境讲述。</p>
+
+<h2 id="递归渲染导航栏">递归渲染导航栏</h2>
+
+<p>分析问题后就开始着手写代码/doge 。首先规定具有如下递归结构的数据：</p>
+
+<pre><code class="language-json">nodes: [
+  {
+    $value: 'H1'，
+    $children: [
+      {
+      	$value: 'H2',
+        $children: [
+          { ... }
+        ]
+      }
+    ]
+  }
+]
+</code></pre>
+
+<p>每个节点都用一个对象来表示 。该对象又有两个属性：<code>$value</code> 与 <code>$children</code>；其中 <code>$value</code> 即该节点的值，<code>$children</code> 是一个数组，包含了其子节点 。这样我们就创建了一个递归的数据结构 —— 判断递归终止的条件也很简单，只要发现 <code>$children</code> 为空数组就可以停止递归了 。</p>
+
+<p>有了数据以后，就可以开始设计组件了 。我的导航栏组件 <code>TreeView</code> 是这样设计的：</p>
+
+<pre><code class="language-html">&lt;template&gt;
+  &lt;div class=&quot;nodes&quot;&gt;
+    &lt;div
+      class=&quot;node&quot;
+      v-for=&quot;(node, index) in nodes&quot;
+      :key=&quot;index&quot;
+    &gt;
+      &lt;div class=&quot;node-head&quot;&gt;
+        {{ node.$value }}
+      &lt;/div&gt;
+      &lt;tree-view
+        class=&quot;node-content&quot;
+        :nodes=&quot;node.$children&quot;
+      &gt;
+      &lt;/tree-view&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+
+<p>后续为了实现活动元素高亮还有一些小改动，不过基本结构就是如此了 。我只需要一行 <code>&lt;tree-view :nodes=&quot;nodes&quot;&gt;&lt;/tree-view&gt;</code> 就能通过递归树形数据创建一个完整的导航栏 。</p>
+
+<p>当然，代码写到这我发现：实现活动元素高亮也有不小的麻烦 。为此我给每个节点分配了一个 <code>$path</code> 属性，该属性同样是一个数组，这个数组包含了一连串的下标 —— 每个下标都代表了该节点在其兄弟节点中的排行（rank）。例如，上述的 <code>H2</code> 节点的 <code>$path</code> 属性就是 <code>[0, 0, 0]</code>；其中第一个零代表了虚拟的根节点 。这样我就可以通过 <code>$path</code> 属性来对没一个节点唯一标识 。</p>
+
+<p>除了 <code>nodes</code> 以外，我又为组建增加了一个 <code>active</code> 属性 。当且仅当某个节点的 <code>$path</code> 属性与 <code>active</code> 属性相同时其为当前活动元素 —— 这时我们就可以将该节点高亮显示了 。</p>
+
+<p>最后，理所当然的 —— 导航栏至少要为用户提供点击跳转的功能 。这个功能其实相当简单 —— 只要在点击该节点时将 <code>active</code> 属性更新为该节点的 <code>$path</code> 属性即可；至于其他的页面滚动跳转就交由其他模块负责就行啦 。不过依然有一个坑点：<strong>直接修改组件内部的属性是绝不可取的！</strong>因为即使你修改了组件内部的属性，外部的数据值也不会同步更新 。所以我使用了 <code>.sync</code> 修饰符，当某个节点被点击事就触发 <code>update:active</code> 事件来做到组件内外的数据同步 。修改后的主要代码如下：</p>
+
+<pre><code class="language-html">&lt;div
+  class=&quot;node-head&quot;
+  :class=&quot;active.toString() === node.$path.toString() ? 'active' : ''&quot;
+  @click=&quot;$emit('update:active', node.$path)&quot;
+&gt;
+  {{ node.$value }}
+&lt;/div&gt;
+&lt;tree-view
+  class=&quot;node-content&quot;
+  :active=&quot;acitve&quot;
+  :nodes=&quot;node.$children&quot;
+  @update:active=&quot;$emit('update:active', $event)&quot;
+&gt;
+&lt;/tree-view&gt;
+</code></pre>
+
+<p>注意子节点同样属于组件内部，同样不能使用 <code>.sync</code> 来直接修改 <code>active</code> 属性 —— 而应该监听 <code>update:active</code> 属性并将事件继续冒泡传递给父级组件 。</p>
+
+<h2 id="由-dom-解析-toc-树">由 DOM 解析 TOC 树</h2>
+
+<p>关于这部分，我想到了一种激动人心的解法 —— 只需要一次 map/reduce 就能解析出所需的 TOC 树 。这里我假设你已经明白了 map/reduce 函数的基本用法 。下面先贴出我的解法：</p>
+
+<pre><code class="language-javascript">Array.from(this.$refs['user-content']
+     .querySelectorAll('h1, h2, h3, h4, h5, h6'))
+     .map((item) =&gt; {
+       item.$value = item.innerText;
+       item.$children = [];
+       return item;
+     }).reduce((result, current, index, array) =&gt; {
+       let parent = (() =&gt; {
+         for (let i = index - 1; i &gt;= 0; i--)
+           if (array[i].tagName &lt; current.tagName)
+             return array[i];
+           return current;
+       })();
+       if (current !== parent) {
+         parent.$children.push(current);
+         current.$path = parent.$path.concat(parent.$children.length - 1);
+       }
+       else {
+         result.push(current);
+         current.$path = [0].concat(result.length - 1);
+       }
+       return result;
+     }, []);
+</code></pre>
+
+<p>记录一下几个比较难理解的点：</p>
+
+<ul>
+<li><p>由于 <code>querySelectorAll</code> 方法返回的并非真正的数组对象，所以它没有 <code>map</code> 方法 。<code>Array.from</code> 方法能将一些类数组对象转化为真正的数组 。注意这个方法是 ES2015 中提出的 —— 这意味着你需要注意浏览器兼容性问题；</p></li>
+
+<li><p>我的算法将该节点前的离它最近且比它级别更高的节点作为其父节点；如果这样的节点不存在，就以它自身为父节点 —— 在 reduce 过程中我就是这样初始化 <code>parent</code> 变量的 。有趣的是，这样的结构看起来很像一个并查集（Union），尤其是以自身为父节点的这个处理让后面的一些操作变得更简单直观了；</p></li>
+
+<li><p>我利用了 javascript 语法中对象按引用传递的小特性 —— 这真的很有趣 。不妨先看一下下面的两个小例子：</p></li>
+</ul>
+
+<pre><code class="language-javascript">  var a = b = {};
+  b.value = 'Hello World';
+  console.log(a); // {value: &quot;test&quot;}
+</code></pre>
+
+<pre><code class="language-javascript">  var a = [], b = [], c = [];
+  a.push(b); b.push(c); c.push(1);
+  console.log(a); // [[[1]]]
+</code></pre>
+
+<p>利用这一特性，我们只需要将子节点 push 进父节点的 <code>$children</code> 数组 ，最后再将那些一级节点（父节点即为自身）按数组返回就能得到嵌套递归的树形结构数据了 。</p>
+
+<p>于是乎，就成功的将 DOM 解析为 TOC 树了。</p>
+
+<h2 id="一些小问题">一些小问题</h2>
+
+<h3 id="取消计算属性缓存">取消计算属性缓存</h3>
+
+<p>众所周知（x），Vue 的计算属性是有缓存功能的 。如果你想取消计算属性缓存，你可以这样写：</p>
+
+<pre><code class="language-javascript">computed: {
+    data: {
+        cache: false,
+        get () { ... },
+        /* set () { ... } */
+    }
+}
+</code></pre>
+
+<p>这样 <code>data</code> 属性就不会被缓存 。</p>
+
+<h3 id="延迟更新-active">延迟更新 active</h3>
+
+<p>我们期望当页面滚动时，User-Content 组件能监听滚动事件并实时更新当前的 active 节点；我们也期望当用户点击导航栏时，页面平滑地滚动到对应锚点 —— 这就造成了一种矛盾：一旦用户点击导航栏，页面就开始滚动；一旦页面开始滚动，它就会触发滚动事件导致 active 属性被重置 。也就是说，页面还没来得及滚动到目标锚点就会被滚动事件的监听函数”拉回去“ 。</p>
+
+<p>所以我采用了一点小技巧：延迟更行 active 属性 。当页面滚动停止时 active 属性才会更新 。这就能保证当用户点击导航栏时，页面平滑地滚动到对应锚点 。主要代码如下：</p>
+
+<pre><code class="language-javascript">this.$refs['user-content'].addEventListener('scroll', () =&gt; {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() =&gt; {
+        this.$emit('update:active', this.current.$path);
+    }, 100);
+</code></pre>
+
+<h3 id="v-html-与-scoped-css">v-html 与 Scoped CSS</h3>
+
+<p>一个平时不太容易注意到的点是 scoped CSS 中的样式无法被渲染到由 v-html 加载出的元素上；这是因为 vue-loader 在编译 Vue 组件时不会给 v-html 中的元素添加 <code>data-v-&lt;hash&gt;</code> 属性 。我在使用 marked 渲染 markdown 的时候发现了这个问题 。</p>
+
+<p>对于新版本的 vue-loader，这个问题可以通过深度选择器（Deep Selectors）来给 v-html 中的元素添加样式 。例如：</p>
+
+<pre><code class="language-CSS">#user-content &gt;&gt;&gt; pre { ... }
+</code></pre>
+
+<p>实际上它会被 vue-loader 解析为：</p>
+
+<pre><code class="language-css">#user-content[data-v-&lt;hash&gt;] pre { ... }
+</code></pre>
+
+<hr />
+
+<p><strong>参考文献：</strong></p>
+
+<ul>
+<li><a href="https://juejin.im/entry/5a45e8a96fb9a04511717324">掘金：用 Vue.js 递归组件构建一个可折叠的树形菜单</a></li>
+<li><a href="https://medium.com/@brockreece/scoped-styles-with-v-html-c0f6d2dc5d8e">Medium：Scoped styles with v-html</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/vue/">vue</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

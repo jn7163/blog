@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mini program on Queensferry&#39;s Blog</title>
+    <link>/tags/mini-program/</link>
+    <description>Recent content in mini program on Queensferry&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 26 Jul 2018 21:20:27 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/mini-program/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>微信小程序学习手记（一）：自定义可滚动TabBar</title>
+      <link>/posts/technique/web/frontend/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%AF%E6%BB%9A%E5%8A%A8tabbar/</link>
+      <pubDate>Thu, 26 Jul 2018 21:20:27 +0000</pubDate>
+      
+      <guid>/posts/technique/web/frontend/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%AF%E6%BB%9A%E5%8A%A8tabbar/</guid>
+      <description>&lt;p&gt;暑假尝试开发了一下微信小程序，发现整体难度并不会很大。框架基本原理就是 MVVM，接触过 Vue.js 等类似框架的人上手相当容易。不过微信生态圈还是给人相对封闭的感觉，自创的 wxml + wxsss + wxs 相比 html + css + js 显得很不健全。当然这不是重点，今天的重点是谈谈自定义 TabBar 。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

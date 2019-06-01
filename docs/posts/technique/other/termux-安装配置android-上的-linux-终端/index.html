@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="Termux 是一款强大的 Android 终端模拟器。它会在你的手机上安装一个无需 root 权限即可使用的最小化 Linux 系统，并且支持 apt 等包管理器 。常见的用法就是通过 SSH 将手机与 PC 端连接起来 。今天就记录一下 Termux 的安装配置流程。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/"/>
+
+  
+
+  <title>Termux 安装配置：Android 上的 Linux 终端 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/'>Termux 安装配置：Android 上的 Linux 终端</a></h2>
+          <span class="date">2018.07.09</span>
+        </div>
+        <div class="post_content markdown"><p>Termux 是一款强大的 Android 终端模拟器。它会在你的手机上安装一个无需 root 权限即可使用的最小化 Linux 系统，并且支持 apt 等包管理器 。常见的用法就是通过 SSH 将手机与 PC 端连接起来 。今天就记录一下 Termux 的安装配置流程。</p>
+
+<h2 id="通过-ssh-连接">通过 SSH 连接</h2>
+
+<p>Termux 可以在 Google Play 上安装，安装完以后就能进入终端界面了。由于通过 PC 操作会更方便一些，这里先进行 SSH 的安装配置。</p>
+
+<ol>
+<li>更新 apt 并安装 openssh</li>
+</ol>
+
+<p>初次运行 Termux，用户需要先更新 apt 源列表。执行以下命令：</p>
+
+<pre><code class="language-bash">   apt-get update
+   apt-get upgrade
+   apt-get install openssh
+</code></pre>
+
+<ol>
+<li>生成公钥并导入 Termux</li>
+</ol>
+
+<p><strong>出于安全考量，Termux 禁止使用用户名+密码访问 SSH 服务，必须使用密钥；且默认 SSH 端口为 8022。</strong></p>
+
+<p>在 PC 端执行<code>ssh-keygen</code> 生成密钥，通过 U 盘等工具将公钥（通常为<code>～/.ssh/id_rsa.pub</code>）拷贝到手机上。这里可能需要授予 Termux 存储权限，以让它读取密钥的内容；或者也可以选择用 Termux 打开文件 —— 该文件会被自动下载到 Termux 的 <code>～/downloads</code> 目录下。</p>
+
+<p>然后在手机端进入存储有公钥的目录，执行命令<code>cat id_rsa.pub &gt; ~/.ssh/authorized_keys</code> 即可成功导入公钥。</p>
+
+<ol>
+<li>连接 SSH 服务</li>
+</ol>
+
+<p>现在在手机端运行<code>sshd &amp;</code>开启 SSH 服务，在 PC 端执行<code>ssh -p 8022 &lt;username&gt;@&lt;ip_addr&gt;</code>即可连接上手机。其中的 username 可以通过在手机端执行<code>whoami</code>获取；ip 地址则可以通过<code>ip addr show</code>获取。</p>
+
+<h2 id="安装-zsh">安装 Zsh</h2>
+
+<p>通常情况下安装 zsh 与 PC 端并无二致，如下：</p>
+
+<pre><code class="language-bash">apt-get install curl git zsh
+sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;
+</code></pre>
+
+<p>也有反映 oh-my-zsh 的官方一键安装脚本无法使用的情况，这时可以考虑使用 <a href="https://github.com/4679/oh-my-termux">oh-my-termux</a> 。</p>
+
+<p>{% note primary%}提示： 若出现 zsh 的 agnoster 主题（或其他依赖 powerline 字体的主题）无法正常显示，可将您的 powerline 字体拷贝到 <code>～/.termux/font.ttf</code> 后执行<code>termux-reload-settings</code> 。详见<a href="https://www.zhihu.com/question/274678906">知乎回答</a>。{% endnote %}</p>
+
+<h2 id="更换-apt-国内源">更换 APT 国内源</h2>
+
+<p>通过以下命令修改 apt 源（这里使用清华源）：</p>
+
+<pre><code>export EDITOR=vim
+apt edit-sources
+# deb http://mirrors.tuna.tsinghua.edu.cn/termux stable main
+</code></pre>
+
+<p>记得在修改完后执行<code>apt-get update</code> 以更新 apt 列表。</p>
+
+<h2 id="开启存储权限">开启存储权限</h2>
+
+<p>为了更方便的连接并管理手机内部存储，我们需要给 Termux 开启存储权限。通常开启存储权限后会在 home 目录下出现一个指向 sd 卡内部存储的 storage 文件夹；如果没有，则可以执行<code>ln -s /sdcard/ ~/storage</code> 将 sd 卡链接到 home 目录下。</p>
+
+<h2 id="使用-scp-传输文件">使用 scp 传输文件</h2>
+
+<p>安装完 Termux 之后最常用的功能之一就是在手机与 PC 之间传输文件，这点可以使用<code>scp</code> 来实现。例如：</p>
+
+<pre><code class="language-bash"># PC to Phone
+scp -P 8022 -r ~/Documents &lt;username&gt;@&lt;ip_addr&gt;:~
+# Phone to PC
+scp -p 8022 -r &lt;username&gt;@&lt;ip_addr&gt;:~/storage/Downloads ~
+</code></pre>
+
+<p>当然也可以使用<code>rsync</code> 等类似工具 。</p>
+
+<h2 id="小技巧及其他">小技巧及其他</h2>
+
+<ul>
+<li><p>或许你会在手机端打开 vim 却尴尬地发现没有 <code>ESC</code> 键。在 Termux 中，你需要用<code>VolUp + q</code> 来打开软键盘；类似的还有<code>VolUp + w|a|s|d</code> 来代替方向键。详细可以参阅 <a href="https://wiki.termux.com/wiki/Touch_Keyboard">Termux Wiki</a> 。</p></li>
+
+<li><p>你可以在你的 Shell 配置文件里配置一些别名来代替冗长的命令。例如我的方案：</p></li>
+</ul>
+
+<pre><code class="language-bash">  export IP_PHONE='&lt;ip_addr&gt;'
+  alias ssh-phone='ssh -p 8022 &lt;username&gt;@$IP_PHONE'
+  function ssh-up() {
+  	if [ -n $1 ]; then
+  		scp -P 8022 -r $1 u0_a177@$IP_PHONE:~
+  	fi
+  }
+  function ssh-down() {
+  	if [ -n $1 ]; then
+  		scp -P 8022 -r u0_a177@$IP_PHONE:~/$1 ~
+  	fi
+  }
+</code></pre>
+
+<p>这样就能用一些简单的命令来进行日常任务了。</p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/android/">android</a>
+                
+                <a href="/tags/terminal/">terminal</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

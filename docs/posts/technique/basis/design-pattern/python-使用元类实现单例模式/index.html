@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="上次在工厂模式中提到了单例模式，说有空再写（咕）。啊不过也没咕多久啦～这篇博客就介绍一下如何用 Python 元类简单优雅地实现单例模式 。
+在一些使用场景里，我们会希望某些类只能创建一个实例，以避免重复造成的资源浪费或是冲突等情况 —— 例如 Windows 系统下的回收站无论如何只能打开一个窗口 —— 这就算是单例模式的应用 。我们通过使用 Python 元类就能非常优雅地实现单例模式 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/basis/design-pattern/python-%E4%BD%BF%E7%94%A8%E5%85%83%E7%B1%BB%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+
+  
+
+  <title>Python 使用元类实现单例模式 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/basis/design-pattern/python-%E4%BD%BF%E7%94%A8%E5%85%83%E7%B1%BB%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/'>Python 使用元类实现单例模式</a></h2>
+          <span class="date">2019.03.05</span>
+        </div>
+        <div class="post_content markdown"><p>上次在工厂模式中提到了单例模式，说有空再写（咕）。啊不过也没咕多久啦～这篇博客就介绍一下如何用 Python 元类简单优雅地实现单例模式 。</p>
+
+<p>在一些使用场景里，我们会希望某些类只能创建一个实例，以避免重复造成的资源浪费或是冲突等情况 —— 例如 Windows 系统下的回收站无论如何只能打开一个窗口 —— 这就算是单例模式的应用 。我们通过使用 Python 元类就能非常优雅地实现单例模式 。</p>
+
+<p><strong>元类可以简单理解为类的类 。</strong>在 Python 中一切皆对象，包括类也是对象；最常见的元类就是 <code>type</code> 。通过继承 <code>type</code>，我们可以实现自定义元类，从而控制类创建实例的行为 。直接说有点抽象，不如先看代码案例 。例子中的 <code>Connection</code> 代表了某种通过密钥获取的网络服务，而我们不希望看到重复认证连接该服务产生的带宽浪费，因此使用了单例模式 。</p>
+
+<p><strong>源代码</strong>：</p>
+
+<pre><code class="language-python">class Singleton(type):
+    def __init__(cls, *args, **kwargs):
+        print('__init__', cls, sep='\n')
+        cls.instance = None
+        super().__init__(*args, **kwargs)
+
+    def __call__(cls, *args, **kwargs):
+        print('__call__', cls, sep='\n')
+        if cls.instance is None:
+            cls.instance = super().__call__(*args, **kwargs)
+        return cls.instance
+
+class Connection(metaclass=Singleton):
+    def __init__(self, secret_key):
+        print('initializing connection...')
+        self.secret_key = secret_key
+
+if __name__ == '__main__':
+    conns = [Connection(0), Connection(1)]
+    print(conns[0] is conns[1])
+</code></pre>
+
+<p><strong>预期输出</strong>：</p>
+
+<pre><code>__init__
+&lt;class '__main__.Connection'&gt;
+__call__
+&lt;class '__main__.Connection'&gt;
+initializing connection...
+__call__
+&lt;class '__main__.Connection'&gt;
+True
+</code></pre>
+
+<p>这里的 <code>Singleton</code> 就是继承了 <code>type</code> 的单例元类 。通过指定 <code>metaclass=Singleton</code> 字段，我们让 <code>Singleton</code> 代替了默认的 <code>type</code> 作为 <code>Connection</code> 的元类 。整个运行过程是这样的：</p>
+
+<ul>
+<li>当程序运行到第 13 行时，<code>Connection</code> 类作为 <code>Singleton</code> 的实例被创建，输出 <code>__init__</code>；</li>
+<li>当程序运行到 <code>Connection(0)</code> 时，<code>Connection.__call__</code>（定义在第 7 行）被调用了 。由于此时 <code>instance</code> 仍然是 <code>None</code>，我们就通过 <code>super().__call__</code> 调用了 <code>__new__</code> 与 <code>__init__</code> 方法创建了目标实例，并输出 <code>initializing connection...</code>；</li>
+<li>当程序运行到 <code>Connection(1)</code> 时，<code>Connection.__call__</code> 再次被调用 。不过此次直接返回了之前已经创建好的 <code>instance</code>，不再调用 <code>__init__</code>方法 。注意此时 <code>secret_key</code> 属性仍然是 0，没有发生改变；</li>
+<li>最后判断的出 <code>conns[0]</code> 与 <code>conns[1]</code> 是两个完全相同的实例，输出 <code>True</code>；</li>
+</ul>
+
+<p>如果你进入交互式环境试一试，就会发现有 <code>conns[*]</code> 与 <code>conn[*].instance</code> 与 <code>Connection.instance</code> 都指向同一个对象 。我们创建对象时就是通过判断 <code>Connection.instance</code> 是否存在来确定是否需要新建实例的 。</p>
+
+<p>元类 <code>Singleton</code> 其实也可以这样改写：</p>
+
+<pre><code class="language-python">def Singleton(name, bases, attrs):
+    class_ = type(name, bases, attrs)
+    class_.instance = None
+    class_.__new__ = __new__
+    return class_
+
+def __new__(cls, *args, **kwargs):
+    if not hasattr(cls, 'instance'):
+        cls.instance = super().__new__(cls, *args, **kwargs)
+    return cls.instance
+</code></pre>
+
+<p>这就涉及到了元类的本质 —— 一个能接受三个参数并返回一个类的 callable 对象；这三个参数分别是类名，父类（元组）与属性（字典）。例如 <code>type('Foo', (object,), {'a': 1})</code> 会返回一个名为 <code>Foo</code>，继承自 <code>object</code>，有属性 <code>a=1</code>的类 。这里我们对 <code>type</code> 元类<strong>做了一点微小的工作</strong>，给返回的类添加了 <code>instance</code> 属性与 <code>__new__</code> 方法，使得通过 <code>Singleton</code> 新建的类在创建实例时会先检查该类是否存在 <code>instance</code> 属性，如果存在则直接返回 —— 从而阻止了新实例的创建，实现了单例模式 。</p>
+
+<p>使用元类实现单例模式的过程还是蛮简单的，很大程度上你只要理解了<strong>元类是类的类</strong>就能弄明白了 。值得一提的是，尽管用元类实现单例模式很方便，但大多数情况下应该避免使用这种黑魔法 —— 尤其是在你还没彻底搞清楚它之前 。</p>
+
+<hr />
+
+<p>参考文献：</p>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/100003/what-are-metaclasses-in-python">StackOverflow: What are metaclasses in Python?</a></li>
+<li><a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c09/p13_using_mataclass_to_control_instance_creation.html">《Python3 Cookbook》：使用元类控制实例的创建</a></li>
+<li><a href="https://www.cnblogs.com/tkqasn/p/6524879.html">博客园：深刻理解Python中的元类(metaclass)以及元类实现单例模式</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/design-pattern/">design pattern</a>
+                
+                <a href="/tags/python/">python</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

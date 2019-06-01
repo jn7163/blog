@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="JavaScript 的类函数式编程无疑是该语言中最为强大的特性之一，但这种强大是有代价的 —— 要想深入理解并运用 JavaScript 函数的各种特性，就需要付出更多的系统性的努力。这篇文章大致是一份读书笔记，系统总结一下我近期学到的 JavaScript 函数基础语法及函数调用相关知识。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/language/javascript/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-js-%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/"/>
+
+  
+
+  <title>深入理解 JS 函数：基础语法与函数调用 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/language/javascript/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-js-%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/'>深入理解 JS 函数：基础语法与函数调用</a></h2>
+          <span class="date">2018.11.16</span>
+        </div>
+        <div class="post_content markdown"><p>JavaScript 的类函数式编程无疑是该语言中最为强大的特性之一，但这种强大是有代价的 —— 要想深入理解并运用 JavaScript 函数的各种特性，就需要付出更多的系统性的努力。这篇文章大致是一份读书笔记，系统总结一下我近期学到的 JavaScript 函数基础语法及函数调用相关知识。</p>
+
+<h2 id="函数类型">函数类型</h2>
+
+<p>JavaScript 中的函数大致可以这样分类：</p>
+
+<ul>
+<li>传统函数
+
+<ul>
+<li>普通函数</li>
+<li>方法</li>
+<li>构造函数</li>
+</ul></li>
+<li>箭头函数</li>
+<li>生成器函数</li>
+</ul>
+
+<h3 id="普通函数">普通函数</h3>
+
+<p><em>（没什么必要讲叭</em></p>
+
+<div class="note warning">需要注意匿名函数的 name 属性在 ES5 与 ES6 中有不同的取值 。例如`var f = function () {}`在 ES5 中有 `f.name === ""`，而在 ES6 中有`f.name === "f"` 。可以参考阮一峰老师的[《ECMAScript 6 入门》](http://es6.ruanyifeng.com/#docs/function#name-%E5%B1%9E%E6%80%A7) 。</div>
+
+<h3 id="箭头函数">箭头函数</h3>
+
+<p>箭头函数是 ES6 中提出的新语法，大概形如<code>() =&gt; {expression}</code>，显得十分直观。同样可以参考阮一峰老师的<a href="http://es6.ruanyifeng.com/#docs/function#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0">《ECMAScript 6 入门》</a>来学习语法细节。这里就记录几点需要特别注意的：</p>
+
+<ul>
+<li>箭头函数的<code>this</code> 对象与执行上下文无关，其<code>this</code> 对象始终指向创建时所在的对象 —— 因为箭头函数本身并没有<code>this</code> 对象；</li>
+<li>箭头函数没有<code>prototype</code>属性，而普通函数都具有该属性；</li>
+<li>箭头函数没有<code>arguments</code> 属性，但可以使用 ES6 引入的<code>...rest</code>语法；</li>
+<li>箭头函数没有<code>super</code> 属性，无法使用<code>new</code> 操作符，也无法使用<code>yield</code> 操作符。</li>
+</ul>
+
+<h3 id="生成器函数">生成器函数</h3>
+
+<p>生成器函数同样是 ES6 中提出的新语法，大概是模仿了 python 中的概念。由于生成器的概念比较难以理解，再加上其异步编程的特性，有时间再单独用一篇文章讨论生成器函数。</p>
+
+<h2 id="参数传递">参数传递</h2>
+
+<h3 id="默认参数值">默认参数值</h3>
+
+<p>在 ES5 中，通常使用<code>||</code>来设置函数参数默认值，例如：</p>
+
+<pre><code class="language-javascript">// default value of x is 0
+function f (x) {
+    x = x || 0;
+    return x;
+}
+</code></pre>
+
+<p>但是在 ES6 中，你可以使用更优雅的、直觉性的语法：</p>
+
+<pre><code class="language-javascript">function f (x = 0) { return x; }
+</code></pre>
+
+<p>一个容易忽略的地方是，参数默认值是惰性求值的。例如：</p>
+
+<pre><code class="language-javascript">var p = 1, f = (x = p) =&gt; x * x;
+f() === 1 // true
+p = 2;
+f() === 4 // true
+</code></pre>
+
+<h3 id="可变长参数表">可变长参数表</h3>
+
+<p>JavaScript 函数（箭头函数除外）默认用有一个类数组的可变长参数表<code>arguments</code> 。这个<code>arguments</code> 参数包含函数的所有参数。例如：</p>
+
+<pre><code class="language-javascript">var f = function (x) { console.log(arguments); }
+f(1, 2, 3); // Arguments(3) [1, 2, 3 ...]
+</code></pre>
+
+<p>需要注意的是<code>arguments</code> 参数并非一个真正的数组，它是一个“类数组”的对象。如果有必要，我们可以通过<code>Array.prototype.slice.call(arguments)</code>（ES5）或者<code>Array.from(arguments)</code>（ES6）来进行数组转换。</p>
+
+<p>在 ES6 中，你还可以使用<code>...rest</code> 语法来收集剩余参数 。例如：</p>
+
+<pre><code class="language-javascript">var f = function (x, ...rest) { console.log(rest); }
+f(1, 2, 3) // [2, 3]
+</code></pre>
+
+<h3 id="传递值还是引用">传递值还是引用？</h3>
+
+<p>这一点几乎是常见编程语言的共同坑点。在 JavaScript 中调用函数时，参数究竟是以值的形式还是对原有参数的引用的形式传递呢？直接给出解释并不直观，就先从例子开始吧：</p>
+
+<pre><code class="language-javascript">var a = 1, b = {}, c = {};
+var f = function (a, b, c) {
+    a = 2;
+    b.item = 1;
+    c = {item: 1};
+}
+f(a, b, c);
+console.log(a, b, c); // 1 {item: 1} {}
+</code></pre>
+
+<p>执行完这段代码你会发现，变量a、c 的值并未改变，但变量b 的值改变了。我们暂时可以得出这样的结论：对于变量a，JS 采用了按值传递；对于变量b，就是典型的按引用传递 。问题就在于，为什么变量c 的值没有改变呢？</p>
+
+<p>问题的答案就在于 JS 的求值策略（Evaluation Strategy）：</p>
+
+<ul>
+<li>对于<strong>基本类型变量</strong>，JavaScript 采用了<strong>按值传递（call by value）</strong>策略 —— 即形参只拥有实参的值的一份拷贝，形参与实参占用的是完全不同的内存空间，修改形参的值无法影响实参；</li>
+<li>对于<strong>引用类型变量</strong>， JavaScript 采用了<strong>按共享传递（call by sharing）</strong>策略 —— 即形参拥有实参的引用的一份拷贝（既不是按值传递的对象副本，也不是按引用传递的隐式引用）。按共享传递与按引用传递的主要区别就在于，对形参的赋值并不会影响实参的值，例如上例中的c 变量；但是对形参的修改会通过引用直接映射到实参上，例如上例中的b 变量 。</li>
+</ul>
+
+<p>可以参考<a href="https://segmentfault.com/a/1190000005794070">这篇文章</a>深入了解 JS 求值策略 。</p>
+
+<p>那么新的问题来了，在 JavaScript 中哪些变量属于基本类型，哪些又属于引用类型呢？答案就是：</p>
+
+<ul>
+<li><code>Boolean</code>，<code>Null</code>， <code>Number</code>，<code>String</code>，<code>Symbol</code>（ES6），<code>Undefined</code>属于基本类型 。可以看到它们都属于不可变（Immutable）类型；</li>
+<li><code>Array</code>，<code>Date</code>，<code>Function</code>，<code>Object</code>，<code>RegExp</code>属于引用类型 。这些类型的变量都是可变（Mutable）的 。在比较两个引用类型变量是否相等时，JavaScript 直接比较它们的引用是否相等。例如<code>{} === {}</code>的结果是<code>false</code>，这是因为尽管它们目前值相等，但是引用了不同的堆内存空间。</li>
+</ul>
+
+<div class="note warning">注意：尽管看起来很像可变类型，`String`事实上是不可变的 。对字符串的修改操作最终都返回一个新的字符串 。如果想要深入了解 JS 变量类型，可以参考[这篇文章](https://segmentfault.com/a/1190000006752076) 。</div>
+
+<h2 id="调用模式">调用模式</h2>
+
+<h3 id="函数调用模式">函数调用模式</h3>
+
+<p>当一个函数并非一个对象的属性时，这个函数就被当作普通函数来调用 。在这种模式下，函数内部的<code>this</code> 会被绑定到全局对象 。例如在 Chrome 调试器中：</p>
+
+<pre><code class="language-javascript">(function () { console.log(this); })();
+// Window {postMessage: f, blur: f, ...}
+</code></pre>
+
+<p>函数输出了全局对象<code>Window</code>。然而需要注意的是，在严格模式中，函数调用模式下的<code>this</code> 对象会被绑定为<code>undefined</code> 。</p>
+
+<h3 id="方法调用模式">方法调用模式</h3>
+
+<p>当一个函数作为一个对象的属性时，它被称作一个方法 。当函数作为方法被调用时，它内部的<code>this</code>变量被绑定到调用它的对象 。例如：</p>
+
+<pre><code class="language-javascript">var counter = {
+    value: 0,
+    increase (x = 1) {
+        this.value += x;
+        return this.value;
+    }
+}
+couter.increase(); // 1
+
+</code></pre>
+
+<h3 id="构造函数模式">构造函数模式</h3>
+
+<p>当函数或方法在调用前使用了<code>new</code> 操作符时，它就构成了构造函数调用 。</p>
+
+<h4 id="显式-隐式返回">显式 / 隐式返回</h4>
+
+<p>通常来说，构造函数不使用<code>return</code> 语句 。构造函数在被调用时会隐式创建并返回一个新的对象，这个对象继承自构造函数的<code>prototype</code> 对象 。在对这个对象进行完初始化以后，该对象会被自动返回 。但是如果函数内部显式地声明了<code>return</code> 语句，那么此时该构造函数就是“显式返回”的，这时如果：</p>
+
+<ul>
+<li>显式返回值是个对象，那么该对象就会覆盖隐式创建的新对象；</li>
+<li>显式返回值是原始值或没有返回值，那么构造函数仍会返回隐式创建的新对象 。</li>
+</ul>
+
+<p>例如可以看看这个例子：</p>
+
+<pre><code class="language-javascript">var f = function (x) { this.x = x; },
+	g = function (x) { this.x = x; return {x: 1}; },
+    h = function (x) { this.x = x; return 1; };
+new f(); // {x: undefined}
+new g(); // {x: 1}
+new h(); // {x: undefined}
+</code></pre>
+
+<h4 id="上下文绑定">上下文绑定</h4>
+
+<p>即使构造函数是某个对象的方法，其上下文依然会被绑定到创建的新对象 。例如在表达式<code>new o.m()</code> 中，构造函数内部的<code>this</code> 会被绑定到新对象而非<code>o</code> 。</p>
+
+<h4 id="prototype-与-proto"><code>prototype</code> 与<code>__proto__</code></h4>
+
+<p>对象都具有<code>__proto__</code>属性，这是 JavaScript 内部实现原型继承链的依赖机制；而只有构造函数拥有<code>prototype</code> 属性 ，一些内置函数（例如<code>alert</code> 和<code>prompt</code>）和箭头函数就没有<code>prototype</code> 属性 。由于我们所创建的函数一般都可以视作构造函数，所以一般而言函数都具有<code>prototype</code> 属性 。</p>
+
+<p>在构造函数模式中，新创建的对象会从构造函数的<code>prototype</code> 对象继承属性 。例如：</p>
+
+<pre><code class="language-javascript">var f = new Function();
+f.prototype.x = 1
+var o = new f();
+o.x === 1                     // true
+o.__proto__ === f.prototype   // true
+f.prototype.constructor === f // true
+console.log(o);               // {}
+console.log(o.__proto__)      // {x: 1, constructor: f}
+</code></pre>
+
+<p>一般来说，函数的<code>prototype</code> 属性是一个拥有<code>constructor</code> 属性且<code>constructor</code> 属性值即为该函数的对象 。</p>
+
+<h3 id="间接调用模式">间接调用模式</h3>
+
+<p>在 JavaScript 中，函数也是对象，因而也拥有自己的方法 。而以下三个函数方法允许我们为函数指定调用时的上下文（即指定<code>this</code>对象）并间接调用它。</p>
+
+<h4 id="apply-方法">apply 方法</h4>
+
+<p><code>apply</code>方法接收两个参数：第一个是要绑定的<code>this</code> 对象，第二个是一个“类数组”参数表 。例如：</p>
+
+<pre><code class="language-javascript">var f = function (y) { console.log(this.x + y); };
+f.apply({x: 1}, [2]); // 3
+</code></pre>
+
+<p>有几点需要注意：</p>
+
+<ul>
+<li>对于箭头函数来说间接调用模式往往是无意义的；因为它没有<code>this</code> 属性可供我们绑定；</li>
+<li>在非严格模式下，传入<code>null</code> 或<code>undefined</code> 会被全局对象（例如<code>Window</code>）代替；</li>
+<li>在非严格模式下，传入原始值会被相应的包装对象代替（例如<code>1</code>被替换为<code>new Number(1)</code>）。</li>
+</ul>
+
+<h4 id="bind-方法">bind 方法</h4>
+
+<p>严格来说，<code>bind</code>方法并不属于间接调用模式 。调用<code>bind</code>方法会返回一个新的函数，这个函数会表现得像原函数被绑定为某个对象的方法一样 。例如：</p>
+
+<pre><code class="language-javascript">var f = function () { console.log(this.x); },
+	g = f.bind({x: 1});
+f(); // undefined
+g(); // 1
+</code></pre>
+
+<p>这个方法对于箭头函数同样没有意义。</p>
+
+<h4 id="call-方法">call 方法</h4>
+
+<p><code>call</code> 方法和<code>apply</code>方法没有太大区别，只不过<code>call</code>方法接受展开来的参数列表，而非一个“类数组”对象 。例如对于上面的<code>apply</code>方法的例子你可以用<code>call</code>方法这样改写：<code>f.call({x: 1}, 2)</code> 。</p>
+
+<hr />
+
+<p><strong>参考文献：</strong></p>
+
+<ul>
+<li><a href="https://book.douban.com/subject/10549733/">《JavaScript 权威指南》</a></li>
+<li><a href="https://book.douban.com/subject/3590768/">《JavaScript 语言精粹》</a></li>
+<li><a href="http://es6.ruanyifeng.com/">《ECMAScript 6 入门》</a></li>
+<li><a href="https://segmentfault.com/a/1190000005794070">SegmentFault：JS中的值是按值传递，还是按引用传递呢？</a></li>
+<li><a href="https://segmentfault.com/a/1190000006752076">SegmentFault：JavaScript 深入了解基本类型和引用类型的值</a></li>
+<li><a href="https://segmentfault.com/q/1010000004292072">SegmentFault：为什么实例没有prototype属性？什么时候对象会有prototype属性呢？</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/function/">function</a>
+                
+                <a href="/tags/javascript/">javascript</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

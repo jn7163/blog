@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>c&#43;&#43; on Queensferry&#39;s Blog</title>
+    <link>/tags/c&#43;&#43;/</link>
+    <description>Recent content in c&#43;&#43; on Queensferry&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 29 Mar 2019 17:36:26 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>C&#43;&#43; virtual 关键字浅析：多态、抽象与多继承</title>
+      <link>/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</link>
+      <pubDate>Fri, 29 Mar 2019 17:36:26 +0000</pubDate>
+      
+      <guid>/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</guid>
+      <description>&lt;p&gt;C++ 的&lt;strong&gt;虚函数&lt;/strong&gt;算是比较高级的语法特性之一，通过 &lt;code&gt;virutal&lt;/code&gt; 关键字来定义，主要用于实现面向对象编程中的多态；&lt;code&gt;virtual&lt;/code&gt; 关键字还可以用来定义&lt;strong&gt;纯&lt;/strong&gt;虚函数，主要用于实现面向对象编程中的抽象；而且多继承的实现也需要用到 &lt;code&gt;virtual&lt;/code&gt; 关键字 。既然 &lt;code&gt;virutal&lt;/code&gt; 关键字这么有用，那就写（水）篇博客记录一下吧！&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

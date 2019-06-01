@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Queensferry&#39;s Blog</title>
+    <link>/</link>
+    <description>Recent content on Queensferry&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 01 Jun 2019 22:06:34 +0800</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Sat, 01 Jun 2019 22:06:34 +0800</pubDate>
+      
+      <guid>/about/</guid>
+      <description>关于我 北京邮电大学在读大一本科生，将来希望从事人工智能产业； 目前的主要问题在于旺盛的折腾欲与有限的时间之间的矛盾； 是枚死宅，喜欢轻音乐，也喜</description>
+    </item>
+    
+    <item>
+      <title>思考自我：工作之外的生活</title>
+      <link>/posts/life/prose/%E6%80%9D%E8%80%83%E8%87%AA%E6%88%91%E5%B7%A5%E4%BD%9C%E4%B9%8B%E5%A4%96%E7%9A%84%E7%94%9F%E6%B4%BB/</link>
+      <pubDate>Tue, 30 Apr 2019 20:01:07 +0000</pubDate>
+      
+      <guid>/posts/life/prose/%E6%80%9D%E8%80%83%E8%87%AA%E6%88%91%E5%B7%A5%E4%BD%9C%E4%B9%8B%E5%A4%96%E7%9A%84%E7%94%9F%E6%B4%BB/</guid>
+      <description>&lt;p&gt;在现代人的语境中，工作与生活几乎是彻底对立、无法共存的词汇 。我是基本上支持这个观点的，尽管情绪没有那么强烈 —— 或许因为我还是学生 。但今天我想讨论 —— 与其说是讨论，不如说反思更为贴切 —— 的就是现代人的工作性质所导致的工作与生活在语义上的分离，以及我们该如何编排工作之外的生活 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Nilsh：从零开始实现交互式 Shell</title>
+      <link>/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/</link>
+      <pubDate>Sun, 21 Apr 2019 08:09:04 +0000</pubDate>
+      
+      <guid>/posts/technique/basis/operating-system/nilsh%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%BA%A4%E4%BA%92%E5%BC%8F-shell/</guid>
+      <description>&lt;p&gt;最近&lt;del&gt;被生活所迫&lt;/del&gt;尝试制作 Shell —— 注意是 Interactive Shell 而非 Shell Interpreter 。参照《现代操作系统》一书的描述，Shell 的基本原理就是 &lt;code&gt;fork-and-execute&lt;/code&gt; 。程序的基本框架看起来可能是这样的：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-C&#34;&gt;#define TRUE 1
+
+while (TRUE) {
+  type_prompt();
+  read_command(command, parameters);
+  if (fork() == 0)
+    execve(command, parameters, 0);
+  else waitpid(-1, &amp;amp;status, 0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然实际实现过程中还是遇到了不少其他问题，这篇博客就简单记录下这些问题及其解决 。我的源代码就托管在 &lt;a href=&#34;https://github.com/queensferryme/nilsh&#34;&gt;GitHub&lt;/a&gt; 上。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>与抽象共存：来自计算机科学的感想</title>
+      <link>/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/</link>
+      <pubDate>Tue, 02 Apr 2019 15:47:24 +0000</pubDate>
+      
+      <guid>/posts/life/comment/%E4%B8%8E%E6%8A%BD%E8%B1%A1%E5%85%B1%E5%AD%98%E6%9D%A5%E8%87%AA%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E7%9A%84%E6%84%9F%E6%83%B3/</guid>
+      <description>&lt;p&gt;抽象（Abstraction）是计算机科学中一个常见的概念 —— 在生活中也很常见 。但我们在日常生活中提及抽象时，往往是为了描述某个事物复杂而难以理解，却往往忽略了抽象背后的统一性 。私将抽象理解为“从一系列复杂的具体事物中抽离出有意义的统一形象”，事物的复杂性是抽象存在的土壤 。事先声明，写这篇博客并非为了从技术的角度阐述计算机科学中抽象的概念，而是单纯的有感而发 —— 是因为我在为时尚短的大学生活中发现的抽象能力的普遍缺乏 。这让我感到不安 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Flask &#43; Celery &#43; Redis 实现异步处理任务队列</title>
+      <link>/posts/technique/web/backend/flask-celery-redis-%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/</link>
+      <pubDate>Sun, 31 Mar 2019 16:40:16 +0000</pubDate>
+      
+      <guid>/posts/technique/web/backend/flask-celery-redis-%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/</guid>
+      <description>&lt;p&gt;最近正在尝试编写网站，其中一个功能是帮助用户从某个 URL 抓取信息 —— 也就是爬虫 。但众所周知，爬虫程序由于 I/O 阻塞通常会消耗较长的时间，无法第一时间对用户请求作出响应 。因此我们会希望让爬虫任务在后台处理，等到执行成功/失败后再将结果返回给用户；而&lt;strong&gt;任务队列&lt;/strong&gt;就作为 Web 后端接口与爬虫处理程序之间的一个中介，负责传输任务的具体内容和执行结果 。这篇博客不会具体阐述 Flask Web 开发或 Python 爬虫的相关技术，而将重点聚焦于使用流行的开源异步任务处理框架 &lt;code&gt;Celery&lt;/code&gt; 实现一个任务队列的基本功能 。&lt;/p&gt;
+
+&lt;p&gt;（我才不是出于咕咕咕的负罪感连更博客的）&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43; virtual 关键字浅析：多态、抽象与多继承</title>
+      <link>/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</link>
+      <pubDate>Fri, 29 Mar 2019 17:36:26 +0000</pubDate>
+      
+      <guid>/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</guid>
+      <description>&lt;p&gt;C++ 的&lt;strong&gt;虚函数&lt;/strong&gt;算是比较高级的语法特性之一，通过 &lt;code&gt;virutal&lt;/code&gt; 关键字来定义，主要用于实现面向对象编程中的多态；&lt;code&gt;virtual&lt;/code&gt; 关键字还可以用来定义&lt;strong&gt;纯&lt;/strong&gt;虚函数，主要用于实现面向对象编程中的抽象；而且多继承的实现也需要用到 &lt;code&gt;virtual&lt;/code&gt; 关键字 。既然 &lt;code&gt;virutal&lt;/code&gt; 关键字这么有用，那就写（水）篇博客记录一下吧！&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python 使用元类实现单例模式</title>
+      <link>/posts/technique/basis/design-pattern/python-%E4%BD%BF%E7%94%A8%E5%85%83%E7%B1%BB%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 05 Mar 2019 19:18:10 +0000</pubDate>
+      
+      <guid>/posts/technique/basis/design-pattern/python-%E4%BD%BF%E7%94%A8%E5%85%83%E7%B1%BB%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <description>&lt;p&gt;上次在工厂模式中提到了单例模式，说有空再写（咕）。啊不过也没咕多久啦～这篇博客就介绍一下如何用 Python 元类简单优雅地实现单例模式 。&lt;/p&gt;
+
+&lt;p&gt;在一些使用场景里，我们会希望某些类只能创建一个实例，以避免重复造成的资源浪费或是冲突等情况 —— 例如 Windows 系统下的回收站无论如何只能打开一个窗口 —— 这就算是单例模式的应用 。我们通过使用 Python 元类就能非常优雅地实现单例模式 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python 实现工厂模式</title>
+      <link>/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sat, 23 Feb 2019 19:39:37 +0000</pubDate>
+      
+      <guid>/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</guid>
+      <description>&lt;p&gt;前几天订阅的 RSS 给我推送了 &lt;a href=&#34;https://realpython.com/factory-method-python/#supporting-additional-formats&#34;&gt;The Factory Method Pattern and Its Implementation in Python&lt;/a&gt;，于是就研究了一番工厂模式 。工厂模式从简单到复杂大约可以分为&lt;strong&gt;简单工厂模式&lt;/strong&gt;（又称静态工厂方法模式），&lt;strong&gt;工厂方法模式&lt;/strong&gt;（又称多态工厂模式）与&lt;strong&gt;抽象工厂模式&lt;/strong&gt;；都是工厂（Factory）—产品（Product）—客户（Client）这样的基础架构 。作为一种创建型模式（Creational Pattern），工厂模式的核心理念就是让某个工厂类来负责生产对象（即产品），客户端只需要提供特定的参数即可；将对象创建和业务处理分离降低系统的耦合度，使得两者修改起来都相对容易 。本文依旧采用 python 实现这一设计模式 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>《流浪地球》豆瓣热评数据分析：热点、观点与反驳</title>
+      <link>/posts/life/comment/%E6%B5%81%E6%B5%AA%E5%9C%B0%E7%90%83%E8%B1%86%E7%93%A3%E7%83%AD%E8%AF%84%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%83%AD%E7%82%B9%E8%A7%82%E7%82%B9%E4%B8%8E%E5%8F%8D%E9%A9%B3/</link>
+      <pubDate>Wed, 20 Feb 2019 23:57:26 +0000</pubDate>
+      
+      <guid>/posts/life/comment/%E6%B5%81%E6%B5%AA%E5%9C%B0%E7%90%83%E8%B1%86%E7%93%A3%E7%83%AD%E8%AF%84%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%83%AD%E7%82%B9%E8%A7%82%E7%82%B9%E4%B8%8E%E5%8F%8D%E9%A9%B3/</guid>
+      <description>&lt;p&gt;我是在大年初二（即 2 月 6 日）观看的&lt;a href=&#34;https://movie.douban.com/subject/26266893&#34;&gt;《流浪地球》&lt;/a&gt;，但我克制住了立马写影评的冲动 —— 一是因为影片前期宣传口碑火爆，我担心自己受到影响（事实上的确或多或少受到了影响）而带有偏见；二是我有预感这部电影会引起较大的争议，只是没想到围绕豆瓣爆发了一场如此激烈的口水仗 。2 月 14 日（即情人节）这天，我利用闲暇的&lt;strong&gt;单身时间&lt;/strong&gt;编写 python 程序抓取了&lt;a href=&#34;https://movie.douban.com/subject/26266893/comments?start=0&amp;amp;limit=20&amp;amp;sort=new_score&amp;amp;status=P&#34;&gt;豆瓣短评热评&lt;/a&gt;中好、中、差评各 500 条并进行了数据分析与可视化，试图从一个更客观的角度解析这部争论不休的电影；而这些数据也的确为我提供了一些新颖的视角，我稍后会在文章中分析 。但首先声明：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;我认为尽管《流浪地球》这部电影存在诸多明显的缺陷，但总体来说&lt;strong&gt;瑕不掩瑜&lt;/strong&gt;，不失为国产科幻电影的一个良好开端；&lt;/li&gt;
+&lt;li&gt;观影体验因人而异，再优秀的电影同样也会有人不喜欢 。我尊重每个人对《流浪地球》&lt;strong&gt;理智&lt;/strong&gt;的评价，即使你认为这部电影烂到透顶 。也欢迎你在下方评论提出不同观点；&lt;/li&gt;
+&lt;li&gt;尽管我不认同豆瓣上的某些低分评价中的观点，但我认同他们有逻辑条理的分析 。部分人情绪化地对一切反对声音发起谩骂式攻击，这样做与他/她们自己口中的水军又有何区别？&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;本文主要是影评，对技术部分感兴趣的朋友可以自行查看 &lt;a href=&#34;https://gist.github.com/queensferryme/5cbdc167126345416e106e0ec2ffa3be&#34;&gt;GitHub Gist&lt;/a&gt; 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python 实现观察者模式/发布订阅模式</title>
+      <link>/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 07 Feb 2019 10:21:55 +0000</pubDate>
+      
+      <guid>/posts/technique/basis/design-pattern/python-%E5%AE%9E%E7%8E%B0%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F-%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F/</guid>
+      <description>&lt;p&gt;春节回乡拜年莫得电脑，于是窝在阁楼上看了些文字 —— 其中就包括&lt;code&gt;发布订阅模式&lt;/code&gt;的一些相关内容 。&lt;code&gt;发布订阅模式&lt;/code&gt;是设计模式中的比较简单一种；它定义了消息在生产者/发布者与消费者/订阅者之间传递的方式 。实际开发中我们通常会使用 Redis / ZeroMQ 等中间件来实现消息分发，但这里我只用 Python 来描述其中的逻辑关系 —— 使用其他语言乃至中间件的逻辑关系基本都是相同的，只有一些细节性差别 。&lt;strong&gt;值得一提的是&lt;/strong&gt;，尽管多数情况下我们将&lt;code&gt;观察者模式&lt;/code&gt;与&lt;code&gt;发布订阅模式&lt;/code&gt;混为一谈（或认为&lt;code&gt;观察者=发布+订阅&lt;/code&gt;），但事实上它们之间存在一定的区别，这点我稍后也会提到 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python 学习手记：使用 smtplib 发送邮件</title>
+      <link>/posts/technique/language/python/python-%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%BD%BF%E7%94%A8-smtplib-%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/</link>
+      <pubDate>Sat, 19 Jan 2019 12:04:16 +0000</pubDate>
+      
+      <guid>/posts/technique/language/python/python-%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%BD%BF%E7%94%A8-smtplib-%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/</guid>
+      <description>&lt;p&gt;高中时期就用 Python 写过一个邮件发送脚本，但当时的逻辑处理得相当凌乱 。这次利用了一个周末晚上总结规整了一下 &lt;code&gt;smtplib&lt;/code&gt; 与 &lt;code&gt;email&lt;/code&gt; 模块的用法，并写了一个鲁棒性比较强且支持模板填充的&lt;a href=&#34;https://gist.github.com/queensferryme/fac00cb791b7d53e49ad12a72b19d754&#34;&gt;邮件群发脚本&lt;/a&gt; 。这篇博客就简单记录一下 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>呓语：2018 / 2019</title>
+      <link>/posts/life/prose/%E5%91%93%E8%AF%AD2018-2019/</link>
+      <pubDate>Tue, 01 Jan 2019 14:05:15 +0000</pubDate>
+      
+      <guid>/posts/life/prose/%E5%91%93%E8%AF%AD2018-2019/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://i.loli.net/2019/01/01/5c2b01fd2f63c.jpg&#34;&gt;&lt;img src=&#34;https://i.loli.net/2019/01/01/5c2b01fd2f63c.jpg&#34; alt=&#34;happy-new-year-2019&#34; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>初步认识CGI/FastCGI：基本架构与C语言实现</title>
+      <link>/posts/technique/web/backend/%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86cgi-fastcgi%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Sun, 30 Dec 2018 12:33:47 +0000</pubDate>
+      
+      <guid>/posts/technique/web/backend/%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86cgi-fastcgi%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;p&gt;最近在做 C 语言课大作业，一拍脑门就决定用 C 语言来实现一个 CGI 程序 —— 这是真实“文案一时爽，开发火葬场” 。总之花了一天时间总算是写出来了，虽然其中大部分时间都是在折腾 sqlite3 那些难懂的接口 。这篇博客就简单记录一下以下几个收获：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;CGI 与 FastCGI 的概念与区别&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;处理简单的 GET/POST 请求&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;源代码同样贴在 &lt;a href=&#34;https://github.com/queensferryme/ccgi&#34;&gt;GitHub&lt;/a&gt;，欢迎参观 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>基于 Vue.js 实现递归树形导航栏组件以及页面锚点同步滚动</title>
+      <link>/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/</link>
+      <pubDate>Sat, 22 Dec 2018 16:36:45 +0000</pubDate>
+      
+      <guid>/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/</guid>
+      <description>&lt;p&gt;这篇博客的标题不是很直观 —— 事实上就是实现了类似百度百科（*以及本博客*）的导航栏效果 。可以这样描述核心功能：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;首先，将正文内容按 H1 ~ H6 解析成递归的树形结构数据并映射到导航栏&lt;/li&gt;
+&lt;li&gt;其次，在用户点击导航栏时将正文平滑滚动到相应锚点&lt;/li&gt;
+&lt;li&gt;最后，当正文内容滚动时同步更新导航栏（高亮活动元素）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;项目的全部源代码与效果图都在 &lt;a href=&#34;https://github.com/queensferryme/treeview&#34;&gt;GitHub&lt;/a&gt; 上，欢迎参观 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Let&#39;s Encrypt 证书配置：使用 acme.sh 自动化工具</title>
+      <link>/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Wed, 28 Nov 2018 18:22:45 +0000</pubDate>
+      
+      <guid>/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/</guid>
+      <description>&lt;p&gt;最近学习浏览器的 Notification API，想要完成一个具有类原生推送功能的页面 。但在部署过程中发现 Chrome 等现代浏览器大多只允许 https 网站发送通知，所以借此机会配置一下 Nginx 服务器的 ssl 访问 。我选择的是开源免费的 Let&#39;s Encrypt 证书和一套非常方便的 acme (Automatic Certificate Management Environment) 工具 &lt;a href=&#34;https://github.com/Neilpang/acme.sh&#34;&gt;acme.sh&lt;/a&gt; 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>深入理解 JS 函数：基础语法与函数调用</title>
+      <link>/posts/technique/language/javascript/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-js-%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/</link>
+      <pubDate>Fri, 16 Nov 2018 19:17:31 +0000</pubDate>
+      
+      <guid>/posts/technique/language/javascript/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-js-%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/</guid>
+      <description>&lt;p&gt;JavaScript 的类函数式编程无疑是该语言中最为强大的特性之一，但这种强大是有代价的 —— 要想深入理解并运用 JavaScript 函数的各种特性，就需要付出更多的系统性的努力。这篇文章大致是一份读书笔记，系统总结一下我近期学到的 JavaScript 函数基础语法及函数调用相关知识。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>故都•秋•遐想</title>
+      <link>/posts/life/prose/%E6%95%85%E9%83%BD%E7%A7%8B%E9%81%90%E6%83%B3/</link>
+      <pubDate>Sat, 10 Nov 2018 19:24:28 +0000</pubDate>
+      
+      <guid>/posts/life/prose/%E6%95%85%E9%83%BD%E7%A7%8B%E9%81%90%E6%83%B3/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://i.loli.net/2018/11/10/5be6bf5f416fe.png&#34;&gt;&lt;img src=&#34;https://i.loli.net/2018/11/10/5be6bf5f416fe.png&#34; alt=&#34;river-lantern&#34; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Docker 初探：部署 MySQL 与 Flask 服务</title>
+      <link>/posts/technique/web/devops/docker-%E5%88%9D%E6%8E%A2%E9%83%A8%E7%BD%B2-mysql-%E4%B8%8E-flask-%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Tue, 30 Oct 2018 08:38:23 +0000</pubDate>
+      
+      <guid>/posts/technique/web/devops/docker-%E5%88%9D%E6%8E%A2%E9%83%A8%E7%BD%B2-mysql-%E4%B8%8E-flask-%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;p&gt;Docker 是目前很流行的应用容器化技术；它能以小得多的资源占用实现系统级别的虚拟化，达到类似虚拟机的效果。使用 Docker 部署自己的应用十分方便而强大：你既不需要费心于各种与应用无关的繁琐配置；又同时拥有对应用高度的自由化管理权限。这篇博客记录一下我初步学习使用 Docker 的成果。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>微信小程序学习手记（一）：自定义可滚动TabBar</title>
+      <link>/posts/technique/web/frontend/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%AF%E6%BB%9A%E5%8A%A8tabbar/</link>
+      <pubDate>Thu, 26 Jul 2018 21:20:27 +0000</pubDate>
+      
+      <guid>/posts/technique/web/frontend/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%AF%E6%BB%9A%E5%8A%A8tabbar/</guid>
+      <description>&lt;p&gt;暑假尝试开发了一下微信小程序，发现整体难度并不会很大。框架基本原理就是 MVVM，接触过 Vue.js 等类似框架的人上手相当容易。不过微信生态圈还是给人相对封闭的感觉，自创的 wxml + wxsss + wxs 相比 html + css + js 显得很不健全。当然这不是重点，今天的重点是谈谈自定义 TabBar 。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Termux 安装配置：Android 上的 Linux 终端</title>
+      <link>/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/</link>
+      <pubDate>Mon, 09 Jul 2018 21:29:11 +0000</pubDate>
+      
+      <guid>/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/</guid>
+      <description>&lt;p&gt;Termux 是一款强大的 Android 终端模拟器。它会在你的手机上安装一个无需 root 权限即可使用的最小化 Linux 系统，并且支持 apt 等包管理器 。常见的用法就是通过 SSH 将手机与 PC 端连接起来 。今天就记录一下 Termux 的安装配置流程。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Manjaro Linux &#43; KDE 安装使用手记</title>
+      <link>/posts/technique/other/manjaro-linux-kde-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%89%8B%E8%AE%B0/</link>
+      <pubDate>Fri, 22 Jun 2018 19:01:01 +0000</pubDate>
+      
+      <guid>/posts/technique/other/manjaro-linux-kde-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%89%8B%E8%AE%B0/</guid>
+      <description>&lt;p&gt;“&lt;code&gt;Manjaro&lt;/code&gt;是一款基于 Arch Linux、对用户友好的 Linux 发行版。” 有多友好呢？在与 Debian 苦战两天无果之后，我用短短半个小时就让 Manjaro 在我老旧的笔记本上跑了起来。再加上内容丰富的 Arch Wiki 使得我在遇到问题时都有据可循，我毫不犹豫地弃 Debian 转 Manjaro。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

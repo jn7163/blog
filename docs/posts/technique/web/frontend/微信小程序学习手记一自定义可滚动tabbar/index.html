@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="暑假尝试开发了一下微信小程序，发现整体难度并不会很大。框架基本原理就是 MVVM，接触过 Vue.js 等类似框架的人上手相当容易。不过微信生态圈还是给人相对封闭的感觉，自创的 wxml &#43; wxsss &#43; wxs 相比 html &#43; css &#43; js 显得很不健全。当然这不是重点，今天的重点是谈谈自定义 TabBar 。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/web/frontend/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%AF%E6%BB%9A%E5%8A%A8tabbar/"/>
+
+  
+
+  <title>微信小程序学习手记（一）：自定义可滚动TabBar &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/web/frontend/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B0%E4%B8%80%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%AF%E6%BB%9A%E5%8A%A8tabbar/'>微信小程序学习手记（一）：自定义可滚动TabBar</a></h2>
+          <span class="date">2018.07.26</span>
+        </div>
+        <div class="post_content markdown"><p>暑假尝试开发了一下微信小程序，发现整体难度并不会很大。框架基本原理就是 MVVM，接触过 Vue.js 等类似框架的人上手相当容易。不过微信生态圈还是给人相对封闭的感觉，自创的 wxml + wxsss + wxs 相比 html + css + js 显得很不健全。当然这不是重点，今天的重点是谈谈自定义 TabBar 。</p>
+
+<p>有人说微信已经自带 TabBar 了，会什么要重复发明轮子呢？原因就在于微信的官方组件将 tab 的数量限制在 2 ~ 5，并且位置只能置顶或沉底，在一些特定场景可能无法满足需求。所以我开始尝试自定义 TabBar。</p>
+
+<h2 id="问题一-界面布局">问题一：界面布局</h2>
+
+<p>写前端自然要考虑布局，而小程序布局与传统网页布局方式就有所不同。传统网页基于盒模型（Box Model），广泛使用 position + display + float 这样的组合；而微信小程序采用了较新的 Flex 布局。不了解的可以参考这篇文章：<a href="http://www.runoob.com/w3cnote/flex-grammar.html">Flex 布局语法教程</a>。</p>
+
+<p>然后开始实现 TabBar，考虑以下两个问题：</p>
+
+<ul>
+<li>如何解决开放数量限制可能导致的内容溢出？</li>
+<li>如何让 TabBar 固定在页面的任意位置？</li>
+</ul>
+
+<p>第一个问题通过微信组件 <a href="https://developers.weixin.qq.com/miniprogram/dev/component/scroll-view.html">scroll-view</a> 可以解决，让 TabBar 横向（或竖向）滚动起来就可以了。第二个问题可以通过 position 属性解决，当然也可以跟随 Flex 布局自然流动。贴上源码：</p>
+
+<pre><code class="language-html">&lt;view class=&quot;container&quot;&gt;
+  &lt;scroll-view class=&quot;tab-bar&quot; scroll-x=&quot;true&quot;&gt;
+    &lt;view class=&quot;tab-item&quot; wx:for=&quot;{{tabs}}&quot;&gt;
+      {{item}}
+    &lt;/view&gt;
+  &lt;/scroll-view&gt;
+&lt;/view&gt;
+</code></pre>
+
+<pre><code class="language-css">.tab-bar {
+  /* Box Model */
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+  width: 100%;
+  /* Position */
+  position: absolute;
+  top: 0;
+}
+
+.tab-bar .tab-item {
+  /* Box Model */
+  display: inline-block;
+  width: 25%;
+}
+</code></pre>
+
+<p>这里特别注意一下 white-space 属性，防止溢出元素换行；以及 display: inline-block属性，它让 tab-item 以行内元素而非块级元素显示，同时 block 的特性使得我们可以让文字水平居中。</p>
+
+<h2 id="问题二-tab-样式">问题二：Tab 样式</h2>
+
+<p>处理 Tab 样式时碰上两个小问题：</p>
+
+<ul>
+<li>文字垂直居中</li>
+<li>当前 Tab 高亮显示</li>
+</ul>
+
+<p>行内元素的垂直居中相信有学过 CSS 的都能解决，将 height 与 line-height 设为同一数值即可。在高亮显示时，我希望给当前元素添加边框 —— 但众所周知，对行内元素添加边框是非法的；于是最终参考<a href="https://blog.csdn.net/sophie_u/article/details/71745125">这篇博客</a>采用 :after 伪元素的方案解决了。依旧贴上源码：</p>
+
+<pre><code class="language-css">.tab-bar {
+  box-shadow: 5rpx 5rpx 5rpx #ccc;
+  height: 100rpx;
+}
+
+.tab-bar .tab-item {
+  line-height: 100rpx;
+  text-align: center;
+}
+
+.tab-bar .tab-item.active {
+  border-radius: 10%;
+  background-color: #eee;
+  color: skyblue;
+  position: relative;
+}
+
+.tab-bar .tab-item.active:after {
+  background-color: skyblue;
+  content: &quot;&quot;;
+  display: block;
+  height: 5rpx;
+  width: 100%;
+  /* position */
+  position: absolute;
+  bottom: 0;
+}
+</code></pre>
+
+<h2 id="问题三-js-逻辑处理">问题三：js 逻辑处理</h2>
+
+<p>最后当然还需要让 Tab 响应点击事件来实现 Tab 之间的切换，这个问题可以通过绑定一个 current 变量轻松解决。并不困难就直接上源码了：</p>
+
+<pre><code class="language-html">&lt;view class=&quot;tab-item {{current===index?'active':''}}&quot; wx:for=&quot;{{tabs}}&quot; data-index=&quot;{{index}}&quot; bindtap=&quot;switchTab&quot;&gt;
+  {{item}}
+&lt;/view&gt;
+</code></pre>
+
+<pre><code class="language-javascript">const app = getApp();
+
+Page({
+  data: {
+    current: 0,
+    tabs: ['Windows', 'Ubuntu', 'CentOS', 'Manjaro', 'MacOS']
+  },
+  switchTab: function(e) {
+    this.setData({
+      current: e.target.dataset.index
+    });
+  }
+});
+</code></pre>
+
+<h2 id="成果">成果</h2>
+
+<p>如下图：</p>
+
+<p><a href="https://i.loli.net/2018/09/16/5b9e5978e0c6e.gif"><img src="https://i.loli.net/2018/09/16/5b9e5978e0c6e.gif" alt="img" /></a></p></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/mini-program/">mini program</a>
+                
+                <a href="/tags/wechat/">wechat</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
