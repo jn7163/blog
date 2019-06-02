@@ -27,8 +27,8 @@ config = {
 }
 
 try:
-	server = SMTP(config['host'], config['port'])
-	server.login(config['user'], config['passwd'])
+    server = SMTP(config['host'], config['port'])
+    server.login(config['user'], config['passwd'])
 except SMTPException:
     print('ERROR: login failed')
 else:
@@ -51,7 +51,7 @@ Python SMTP Test Mail.
 '''
 
 try:
-	server.send_mail(config['sender'], config['receiver'], config['message'])
+    server.send_mail(config['sender'], config['receiver'], config['message'])
 except SMTPExecption as error:
     print('ERROR: mail failed to send', error)
 else:

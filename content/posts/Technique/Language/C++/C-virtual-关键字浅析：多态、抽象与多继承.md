@@ -92,22 +92,22 @@ using std::endl;
 class Person {
   public:
     virtual void say() {
-	  cout << "I am a person." << endl;
-	}
+      cout << "I am a person." << endl;
+    }
 };
 
 class Student : public Person {
   public:
     void say() {
-	  cout << "I am a student." << endl;
-	}
+      cout << "I am a student." << endl;
+    }
 };
 
 class Teacher : public Person {
   public:
     void say() {
-	  cout << "I am a teacher." << endl;
-	}
+      cout << "I am a teacher." << endl;
+    }
 };
 
 void person_say(Person& p) {
@@ -169,15 +169,15 @@ using std::endl;
 class Base {
   public:
     virtual void test(int val=10) {
-	  cout << val << endl;
-	}
+      cout << val << endl;
+    }
 };
 
 class Derived : public Base {
   public:
     void test(int val=20) override {
-	  cout << val << endl;
-	}
+      cout << val << endl;
+    }
 };
 
 int main() {
@@ -214,8 +214,8 @@ class Base {
 class Derived : public Base {
   public:
     void test() {
-	  cout << "in derived" << endl;
-	}
+      cout << "in derived" << endl;
+    }
 };
 ```
 
@@ -234,7 +234,7 @@ using std::endl;
 class Base {
   public:
     Base() { cout << "Base()" << endl; }
-	Base(int x) { cout << "Base(int)" << endl; }
+    Base(int x) { cout << "Base(int)" << endl; }
 };
 
 class ParentA : public Base {
@@ -301,4 +301,4 @@ ParentB()
 Child()
 ```
 
-这下是按照我们的预期运行了w
+这下是按照我们的预期运行了 w

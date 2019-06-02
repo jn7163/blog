@@ -186,22 +186,22 @@ using std::endl;
 class Person {
   public:
     virtual void say() {
-	  cout &lt;&lt; &quot;I am a person.&quot; &lt;&lt; endl;
-	}
+      cout &lt;&lt; &quot;I am a person.&quot; &lt;&lt; endl;
+    }
 };
 
 class Student : public Person {
   public:
     void say() {
-	  cout &lt;&lt; &quot;I am a student.&quot; &lt;&lt; endl;
-	}
+      cout &lt;&lt; &quot;I am a student.&quot; &lt;&lt; endl;
+    }
 };
 
 class Teacher : public Person {
   public:
     void say() {
-	  cout &lt;&lt; &quot;I am a teacher.&quot; &lt;&lt; endl;
-	}
+      cout &lt;&lt; &quot;I am a teacher.&quot; &lt;&lt; endl;
+    }
 };
 
 void person_say(Person&amp; p) {
@@ -262,15 +262,15 @@ using std::endl;
 class Base {
   public:
     virtual void test(int val=10) {
-	  cout &lt;&lt; val &lt;&lt; endl;
-	}
+      cout &lt;&lt; val &lt;&lt; endl;
+    }
 };
 
 class Derived : public Base {
   public:
     void test(int val=20) override {
-	  cout &lt;&lt; val &lt;&lt; endl;
-	}
+      cout &lt;&lt; val &lt;&lt; endl;
+    }
 };
 
 int main() {
@@ -308,8 +308,8 @@ int main() {
 class Derived : public Base {
   public:
     void test() {
-	  cout &lt;&lt; &quot;in derived&quot; &lt;&lt; endl;
-	}
+      cout &lt;&lt; &quot;in derived&quot; &lt;&lt; endl;
+    }
 };
 </code></pre>
 
@@ -327,7 +327,7 @@ using std::endl;
 class Base {
   public:
     Base() { cout &lt;&lt; &quot;Base()&quot; &lt;&lt; endl; }
-	Base(int x) { cout &lt;&lt; &quot;Base(int)&quot; &lt;&lt; endl; }
+    Base(int x) { cout &lt;&lt; &quot;Base(int)&quot; &lt;&lt; endl; }
 };
 
 class ParentA : public Base {
@@ -389,7 +389,7 @@ ParentB()
 Child()
 </code></pre>
 
-<p>这下是按照我们的预期运行了w</p></div>
+<p>这下是按照我们的预期运行了 w</p></div>
         <div class="post_footer">
           
           <div class="meta">

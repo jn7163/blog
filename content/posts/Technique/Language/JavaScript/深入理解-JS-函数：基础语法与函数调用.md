@@ -25,7 +25,7 @@ JavaScript 中的函数大致可以这样分类：
 
 *（没什么必要讲叭*
 
-<div class="note warning">需要注意匿名函数的 name 属性在 ES5 与 ES6 中有不同的取值 。例如`var f = function () {}`在 ES5 中有 `f.name === ""`，而在 ES6 中有`f.name === "f"` 。可以参考阮一峰老师的[《ECMAScript 6 入门》](http://es6.ruanyifeng.com/#docs/function#name-%E5%B1%9E%E6%80%A7) 。</div>
+>   需要注意匿名函数的 name 属性在 ES5 与 ES6 中有不同的取值 。例如`var f = function () {}`在 ES5 中有 `f.name === ""`，而在 ES6 中有`f.name === "f"` 。可以参考阮一峰老师的[《ECMAScript 6 入门》](http://es6.ruanyifeng.com/#docs/function#name-%E5%B1%9E%E6%80%A7) 。
 
 ### 箭头函数
 
@@ -162,7 +162,7 @@ couter.increase(); // 1
 
 ```javascript
 var f = function (x) { this.x = x; },
-	g = function (x) { this.x = x; return {x: 1}; },
+    g = function (x) { this.x = x; return {x: 1}; },
     h = function (x) { this.x = x; return 1; };
 new f(); // {x: undefined}
 new g(); // {x: 1}
@@ -217,7 +217,7 @@ f.apply({x: 1}, [2]); // 3
 
 ```javascript
 var f = function () { console.log(this.x); },
-	g = f.bind({x: 1});
+    g = f.bind({x: 1});
 f(); // undefined
 g(); // 1
 ```

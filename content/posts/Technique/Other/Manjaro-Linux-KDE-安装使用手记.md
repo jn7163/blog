@@ -143,11 +143,11 @@ sudo vim /etc/pacman.conf
 sudo pacman -Sy yaourt
 ```
 
+>   提示： yaourt 使用时无需 sudo，否则会出错；如果频繁被提示需要调用 vim 等编辑器，可以考虑在`~/.zshrc` （bash 则为`~/.bashrc`）里添加 `export VISUAL="vim"` 。
+
 可以参考 DigitalOcean 的这篇文章：[How To Use Yaourt to Easily Download Arch Linux Community Packages](https://www.digitalocean.com/community/tutorials/how-to-use-yaourt-to-easily-download-arch-linux-community-packages)。
 
-{% note primary%}提示： yaourt 使用时无需 sudo，否则会出错；如果频繁被提示需要调用 vim 等编辑器，可以考虑在`~/.zshrc` （bash 则为`~/.bashrc`）里添加 `export VISUAL="vim"` 。{% endnote %}
-
-{% note warning %}注意：yaourt 目前已经停止维护，用户可以考虑迁移到 aurman 或 yay 。可以参考 [Arch Wiki](https://wiki.archlinux.org/index.php/AUR_Helpers) 详细了解。{% endnote %}
+>   注意：yaourt 目前已经停止维护，用户可以考虑迁移到 aurman 或 yay 。可以参考 [Arch Wiki](https://wiki.archlinux.org/index.php/AUR_Helpers) 详细了解。
 
 #### zsh & oh-my-zsh
 号称终极 Shell，拥有远超 bash 的高效功能。

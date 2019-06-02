@@ -118,7 +118,7 @@ fgets(post_data, content_length + 1, stdin);
 
 编译成功后，就可以使用 `spawn-fcgi` 命令来启动 FCGI 进程 。例如：`spawn-fcgi -a 127.0.0.1 -p 5000 -f $PWD/main.cgi -P main.pid` 。这个命令会从 `main.cgi` 启动 FCGI 进程并监听本地的 5000 端口，进程的 pid 同时也会被保存在当前目录的 `main.pid` 文件内 。
 
-<div class="note danger">**注意**：`spawn-fcgi` 中可执行文件应该使用绝对路径 。</div>
+>   注意：`spawn-fcgi` 中可执行文件应该使用绝对路径 。
 
 最后的部署我采用了个人最喜欢的高性能 Web 服务器 Nginx 。服务器配置只有简单的几行：
 
@@ -134,7 +134,7 @@ server {
 }
 ```
 
-（*不说了，复习线性代数去了qwq*）
+（不说了，复习线性代数去了qwq）
 
 ______
 

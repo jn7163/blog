@@ -251,11 +251,15 @@ sudo vim /etc/pacman.conf
 sudo pacman -Sy yaourt
 </code></pre>
 
+<blockquote>
+<p>提示： yaourt 使用时无需 sudo，否则会出错；如果频繁被提示需要调用 vim 等编辑器，可以考虑在<code>~/.zshrc</code> （bash 则为<code>~/.bashrc</code>）里添加 <code>export VISUAL=&quot;vim&quot;</code> 。</p>
+</blockquote>
+
 <p>可以参考 DigitalOcean 的这篇文章：<a href="https://www.digitalocean.com/community/tutorials/how-to-use-yaourt-to-easily-download-arch-linux-community-packages">How To Use Yaourt to Easily Download Arch Linux Community Packages</a>。</p>
 
-<p>{% note primary%}提示： yaourt 使用时无需 sudo，否则会出错；如果频繁被提示需要调用 vim 等编辑器，可以考虑在<code>~/.zshrc</code> （bash 则为<code>~/.bashrc</code>）里添加 <code>export VISUAL=&quot;vim&quot;</code> 。{% endnote %}</p>
-
-<p>{% note warning %}注意：yaourt 目前已经停止维护，用户可以考虑迁移到 aurman 或 yay 。可以参考 <a href="https://wiki.archlinux.org/index.php/AUR_Helpers">Arch Wiki</a> 详细了解。{% endnote %}</p>
+<blockquote>
+<p>注意：yaourt 目前已经停止维护，用户可以考虑迁移到 aurman 或 yay 。可以参考 <a href="https://wiki.archlinux.org/index.php/AUR_Helpers">Arch Wiki</a> 详细了解。</p>
+</blockquote>
 
 <h4 id="zsh-oh-my-zsh">zsh &amp; oh-my-zsh</h4>
 

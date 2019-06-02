@@ -126,7 +126,9 @@
 
 <p><em>（没什么必要讲叭</em></p>
 
-<div class="note warning">需要注意匿名函数的 name 属性在 ES5 与 ES6 中有不同的取值 。例如`var f = function () {}`在 ES5 中有 `f.name === ""`，而在 ES6 中有`f.name === "f"` 。可以参考阮一峰老师的[《ECMAScript 6 入门》](http://es6.ruanyifeng.com/#docs/function#name-%E5%B1%9E%E6%80%A7) 。</div>
+<blockquote>
+<p>需要注意匿名函数的 name 属性在 ES5 与 ES6 中有不同的取值 。例如<code>var f = function () {}</code>在 ES5 中有 <code>f.name === &quot;&quot;</code>，而在 ES6 中有<code>f.name === &quot;f&quot;</code> 。可以参考阮一峰老师的<a href="http://es6.ruanyifeng.com/#docs/function#name-%E5%B1%9E%E6%80%A7">《ECMAScript 6 入门》</a> 。</p>
+</blockquote>
 
 <h3 id="箭头函数">箭头函数</h3>
 
@@ -262,7 +264,7 @@ couter.increase(); // 1
 <p>例如可以看看这个例子：</p>
 
 <pre><code class="language-javascript">var f = function (x) { this.x = x; },
-	g = function (x) { this.x = x; return {x: 1}; },
+    g = function (x) { this.x = x; return {x: 1}; },
     h = function (x) { this.x = x; return 1; };
 new f(); // {x: undefined}
 new g(); // {x: 1}
@@ -316,7 +318,7 @@ f.apply({x: 1}, [2]); // 3
 <p>严格来说，<code>bind</code>方法并不属于间接调用模式 。调用<code>bind</code>方法会返回一个新的函数，这个函数会表现得像原函数被绑定为某个对象的方法一样 。例如：</p>
 
 <pre><code class="language-javascript">var f = function () { console.log(this.x); },
-	g = f.bind({x: 1});
+    g = f.bind({x: 1});
 f(); // undefined
 g(); // 1
 </code></pre>

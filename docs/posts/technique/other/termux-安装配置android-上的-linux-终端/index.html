@@ -111,31 +111,22 @@
 <p>Termux 可以在 Google Play 上安装，安装完以后就能进入终端界面了。由于通过 PC 操作会更方便一些，这里先进行 SSH 的安装配置。</p>
 
 <ol>
-<li>更新 apt 并安装 openssh</li>
+<li><p>更新 apt 并安装 openssh</p>
+
+<p>初次运行 Termux，用户需要先更新 apt 源列表。执行以下命令：<code>apt-get update &amp;&amp; apt-get upgrade &amp;&amp; apt-get install openssh</code></p></li>
+
+<li><p>生成公钥并导入 Termux</p>
+
+<p>出于安全考量，Termux 禁止使用用户名+密码访问 SSH 服务，必须使用密钥；且默认 SSH 端口为 8022 。</p>
+
+<p>在 PC 端执行<code>ssh-keygen</code> 生成密钥，通过 U 盘等工具将公钥（通常为<code>～/.ssh/id_rsa.pub</code>）拷贝到手机上。这里可能需要授予 Termux 存储权限，以让它读取密钥的内容；或者也可以选择用 Termux 打开文件 —— 该文件会被自动下载到 Termux 的 <code>～/downloads</code> 目录下 。</p>
+
+<p>然后在手机端进入存储有公钥的目录，执行命令<code>cat id_rsa.pub &gt; ~/.ssh/authorized_keys</code> 即可成功导入公钥。</p></li>
+
+<li><p>连接 SSH 服务</p>
+
+<p>现在在手机端运行<code>sshd &amp;</code>开启 SSH 服务，在 PC 端执行 <code>ssh -p 8022 &lt;username&gt;@&lt;ip_addr&gt;</code> 即可连接上手机。其中的 username 可以通过在手机端执行<code>whoami</code>获取；ip 地址则可以通过<code>ip addr show</code>获取。</p></li>
 </ol>
-
-<p>初次运行 Termux，用户需要先更新 apt 源列表。执行以下命令：</p>
-
-<pre><code class="language-bash">   apt-get update
-   apt-get upgrade
-   apt-get install openssh
-</code></pre>
-
-<ol>
-<li>生成公钥并导入 Termux</li>
-</ol>
-
-<p><strong>出于安全考量，Termux 禁止使用用户名+密码访问 SSH 服务，必须使用密钥；且默认 SSH 端口为 8022。</strong></p>
-
-<p>在 PC 端执行<code>ssh-keygen</code> 生成密钥，通过 U 盘等工具将公钥（通常为<code>～/.ssh/id_rsa.pub</code>）拷贝到手机上。这里可能需要授予 Termux 存储权限，以让它读取密钥的内容；或者也可以选择用 Termux 打开文件 —— 该文件会被自动下载到 Termux 的 <code>～/downloads</code> 目录下。</p>
-
-<p>然后在手机端进入存储有公钥的目录，执行命令<code>cat id_rsa.pub &gt; ~/.ssh/authorized_keys</code> 即可成功导入公钥。</p>
-
-<ol>
-<li>连接 SSH 服务</li>
-</ol>
-
-<p>现在在手机端运行<code>sshd &amp;</code>开启 SSH 服务，在 PC 端执行<code>ssh -p 8022 &lt;username&gt;@&lt;ip_addr&gt;</code>即可连接上手机。其中的 username 可以通过在手机端执行<code>whoami</code>获取；ip 地址则可以通过<code>ip addr show</code>获取。</p>
 
 <h2 id="安装-zsh">安装 Zsh</h2>
 
@@ -147,7 +138,9 @@ sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/to
 
 <p>也有反映 oh-my-zsh 的官方一键安装脚本无法使用的情况，这时可以考虑使用 <a href="https://github.com/4679/oh-my-termux">oh-my-termux</a> 。</p>
 
-<p>{% note primary%}提示： 若出现 zsh 的 agnoster 主题（或其他依赖 powerline 字体的主题）无法正常显示，可将您的 powerline 字体拷贝到 <code>～/.termux/font.ttf</code> 后执行<code>termux-reload-settings</code> 。详见<a href="https://www.zhihu.com/question/274678906">知乎回答</a>。{% endnote %}</p>
+<blockquote>
+<p>提示： 若出现 zsh 的 agnoster 主题（或其他依赖 powerline 字体的主题）无法正常显示，可将您的 powerline 字体拷贝到 <code>～/.termux/font.ttf</code> 后执行<code>termux-reload-settings</code> 。详见<a href="https://www.zhihu.com/question/274678906">知乎回答</a>。</p>
+</blockquote>
 
 <h2 id="更换-apt-国内源">更换 APT 国内源</h2>
 
@@ -187,14 +180,14 @@ scp -p 8022 -r &lt;username&gt;@&lt;ip_addr&gt;:~/storage/Downloads ~
 <pre><code class="language-bash">  export IP_PHONE='&lt;ip_addr&gt;'
   alias ssh-phone='ssh -p 8022 &lt;username&gt;@$IP_PHONE'
   function ssh-up() {
-  	if [ -n $1 ]; then
-  		scp -P 8022 -r $1 u0_a177@$IP_PHONE:~
-  	fi
+      if [ -n $1 ]; then
+          scp -P 8022 -r $1 u0_a177@$IP_PHONE:~
+      fi
   }
   function ssh-down() {
-  	if [ -n $1 ]; then
-  		scp -P 8022 -r u0_a177@$IP_PHONE:~/$1 ~
-  	fi
+      if [ -n $1 ]; then
+          scp -P 8022 -r u0_a177@$IP_PHONE:~/$1 ~
+      fi
   }
 </code></pre>
 
