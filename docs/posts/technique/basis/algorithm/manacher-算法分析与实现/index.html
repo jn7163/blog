@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="最近刚做完 Leetcode 上的 Longest Palindromic Substring，用的是 Manacher 算法（国内俗称马拉车算法）。之前高中打 OI 时也做过同样的题目，不过当时是作为动态规划的例题来介绍的；再加上后来我没认真学 Manacher 算法，所以直到这几天才算是初步学习了该算法。
+Manacher 算法是一种能以 O(n) 的时间复杂度找出一个字符串里的所有回文子串的算法。相比于暴力搜索（O(n^3)）与动态规划/中心扩展（O(n^2)），它的时间复杂度要低得多。这篇博客就简单记录一下我对 Manacher 算法的理解。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/basis/algorithm/manacher-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/"/>
+
+  
+
+  <title>Manacher 算法分析与实现 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/basis/algorithm/manacher-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/'>Manacher 算法分析与实现</a></h2>
+          <span class="date">2019.08.07</span>
+        </div>
+        <div class="post_content markdown"><p>最近刚做完 Leetcode 上的 <a href="https://leetcode-cn.com/problems/longest-palindromic-substring/">Longest Palindromic Substring</a>，用的是 Manacher 算法（国内俗称马拉车算法）。之前高中打 OI 时也做过同样的题目，不过当时是作为动态规划的例题来介绍的；再加上后来<del>我没认真学 Manacher 算法</del>，所以直到这几天才算是初步学习了该算法。</p>
+
+<p>Manacher 算法是一种能以 O(n) 的时间复杂度找出一个字符串里的所有回文子串的算法。相比于暴力搜索（O(n^3)）与动态规划/中心扩展（O(n^2)），它的时间复杂度要低得多。这篇博客就简单记录一下我对 Manacher 算法的理解。</p>
+
+<h2 id="0x00-字符串预处理">0x00 字符串预处理</h2>
+
+<p>Manacher 算法运用巧妙的预处理<strong>规避了奇数长度回文子串与偶数长度回文子串的问题</strong>。预处理的方式就是在字符串的头尾和任意两个字符的中间插入占位符 <code>#</code>，例如将 <code>abaaba</code> 转化为 <code>#a#b#a#a#b#a#</code> —— 这样一来，原本的偶数长度回文子串就变成了以 <code>#</code> 为中心的奇数长度回文子串。且不论原来是奇数长度回文子串还是偶数长度回文子串，原回文子串长度 <code>len</code> 与新回文子串长度 <code>len'</code> 满足关系 <code>len' = 2 * len + 1</code>。</p>
+
+<p>还有一项预处理并非必要的，但却值得推荐 —— 在 <code>#</code> 预处理后的字符串的头尾再插入 <code>^</code> 与 <code>$</code> 占位符。这两个占位符不能相等，不能再原字符串中出现过：这样就能有效地减少使用 <code>if</code> 表达式进行<strong>边界检查</strong>的次数。为什么需要边界检查？因为 Manacher 算法的原理和中心扩展很相似，只不过充分利用了一些已知信息来减少计算。若使用中心扩展法，对于字符串 <code>#a#b#a#b#a#</code>，我们从最中间的 <code>a</code> 开始向两边扩展，直到碰到不相等的字符或字符串的头和尾扩展结束，得到一个回文子串。在头尾加上了 <code>^$</code> 占位符后我们就不需要再特意进行边界检查了，因为 <code>^ != $</code> 会自动让扩展结束。</p>
+
+<p>总而言之，对于原串 <code>abaaba</code>，其预处理结果是 <code>^#a#b#a#a#b#a#$</code>。</p>
+
+<h2 id="0x01-理解-lps-数组">0x01 理解 LPS 数组</h2>
+
+<p>假设原字符串为 <code>str</code>，预处理后的字符串为 <code>str'</code>，那么我们需要构造一个与 <code>str'</code> 等长的 <code>lps</code> 数组，其中 <code>lps[i]</code> 代表以 <code>str'[i]</code> 为中心的最长回文子串的半径。例如对于 <code>^#a#b#a#a#b#a#$</code>（<code>abaaba</code>），我们有：</p>
+
+<table>
+<thead>
+<tr>
+<th>^</th>
+<th>#</th>
+<th>a</th>
+<th>#</th>
+<th>b</th>
+<th>#</th>
+<th>a</th>
+<th>#</th>
+<th>a</th>
+<th>#</th>
+<th>b</th>
+<th>#</th>
+<th>a</th>
+<th>#</th>
+<th>$</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>1</td>
+<td>6</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>不难发现 LPS 数组具有这样几个性质：</p>
+
+<ol>
+<li>回文子串对应的 LPS 数组*基本上*也是回文对称的；</li>
+<li><code>lps[i]</code> 和原字符串中对应的回文子串的长度相等。例如对于 <code>str'[4] = 'b', lps[4] = 3</code> 对应原字符中的回文子串 <code>str[0:3] = &quot;aba&quot;</code>，对于 <code>str[7] = '#', lps[7] = 6</code> 对应原字符中的回文子串 <code>str[0:6] = &quot;abaaba&quot;</code>；</li>
+<li>字符 <code>str'[i]</code> 对应 <code>str[(i - 1) / 2]</code> 的字符，例如 <code>str'[2] = 'a'</code> 对应原字符串中下标为 <code>(2 - 1) / 2 = 0</code> 的字符 <code>str[0] = 'a'</code>。</li>
+</ol>
+
+<p>其中性质 1 是理解 Manacher 算法的关键。</p>
+
+<p>我们之前提到过<strong>中心扩展</strong>方法：在这种朴素的方法中，我们以每个字符为中心向两侧扩展，看看最长能扩展出多长的回文子串 —— 这种算法的时间复杂度是 O(n^2)。这种算法是正确的，但还可以继续优化：一是奇数长度回文子串与偶数长度回文子串的问题（我们通过字符串预处理解决了这个问题），二是我们没有充分利用已知的信息。</p>
+
+<p>根据性质 2，我们要解决的问题是“找出最长回文子串”，换言之就是找出 LPS 数组中的最大值。而在计算 LPS 数组时，我们不需要每次都进行中心扩展，而可以充分利用性质 1：例如如果我们已知 <code>lps[2]</code> 与 <code>lps[4]</code>，那么利用 <code>str[0:3] = &quot;aba&quot;</code> 的回文性质，我们就能直接得出 <code>lps[6] = lps[2]</code>，而不需要重新中心扩展进行计算。这里我们有两个已知信息：<code>mirror = 2</code> 与 <code>center = 4</code>，而在求解 <code>i = 6</code> 的 LPS 值时我们就可以充分利用 <code>lps[i] = lps[2 * center - i] = lps[mirror]</code> 来减少计算。</p>
+
+<blockquote>
+<p>通常来说我们会从左往右（从 1 到 str.length）地计算 LPS 数组，而为了最大限度地利用已知信息，<code>center</code> 通常时已知最靠右的回文子串，也就是说 <code>center + lps[center]</code> 是已知中最大的。</p>
+</blockquote>
+
+<p>不过我们在性质 1 中使用了“基本上”这个词，因为这种对称性并不总是成立的；使得这种对称性不成立的情况有两种：左贴界与右越界。</p>
+
+<h2 id="0x10-处理特殊情况">0x10 处理特殊情况</h2>
+
+<h3 id="0x10-0-左贴界">0x10-0 左贴界</h3>
+
+<p>考虑这样一个字符串 <code>str = &quot;^#a#b#a#b#a#$&quot;</code>。如果我们此时已知 <code>center = 4, str[center] = 'b'</code>，而要求 <code>i = 6, str[i] = 'a'</code>。此时如果你使用上述公式 <code>lps[i] = lps[2 * center - i] = lps[mirror] = lps[2] = 1</code> 就会发现我们得到的并非正确答案 —— 准确来说比正确答案更小（肉眼观察不难发现 <code>lps[i]</code> 应该等于 5）。</p>
+
+<p>这种情况发生的原因是 <code>str[mirror]</code> 在扩展时碰到了原字符串的左边界，而 <code>str[i]</code> 则不受到此边界的限制，它可以继续扩展。在这种情况下，我们就不得不再做一些中心扩展，它的代码大概是这样的：</p>
+
+<pre><code class="language-c++">while (str[i + lps[i] + 1] == str[i - lps[i] - 1])
+  lps[i]++;
+</code></pre>
+
+<h3 id="0x10-1-右越界">0x10-1 右越界</h3>
+
+<p>对于 <code>str = &quot;^ababc$&quot;</code>（出于可读性考量，此处省略了部分预处理，因为不存在偶数长度回文子串），如果我们已知 <code>center= 3, str[center] = 'a'</code>，正在计算 <code>i = 4, str[i] = 'b'</code> 的 LPS 值，我们可以看到 <code>0 = lps[i] != lps[2 * center - i] = lps[mirror] = lps[2] = 1</code>。这是因为 <code>i + lps[mirror] = 5 &gt; 4 = center + lps[center]</code>，我们越过了已知最靠右的回文子串的右边界 —— 一旦越过该边界，我们就无法确定 LPS 的回文对称性质是否依然成立。</p>
+
+<p>解决方法也很简单，我们让 <code>lps[i] = min(center + lps[center] - i, lps[mirror])</code>。需要注意的是，右越界以后事实上并不需要、也不能继续（像左贴界一样）中心扩展，尽管我们具体代码实现时并不特别区分左贴界与右越界的情况。这是因为（反证法）如果能继续扩展，那么 <code>lps[center]</code> 就应该比现在的更大。</p>
+
+<h3 id="0x10-2-无已知信息">0x10-2 无已知信息</h3>
+
+<p>即使 Manacher 算法利用已知信息减少了计算量，我们终归还是要做一些中心扩展计算的。比如（如果我们从左往右计算）我们在计算 <code>lps[1]</code> 时就不会有任何已知信息；如果 <code>i &gt; center + lps[center]</code> —— 这意味着我们正在计算的位置已经超过了已知最靠右的回文子串的右边界，我们同样也没有已知信息可利用。</p>
+
+<p>这时候我们应该假设 <code>lps[i] = 0</code>，然后再进行中心扩展。</p>
+
+<h2 id="0x11-实现-manacher-算法">0x11 实现 Manacher 算法</h2>
+
+<p>接下来我们就使用 C++ 实现马拉车算法，来找出最长回文子串。</p>
+
+<pre><code class="language-C++">string manacher(string &amp;str) {
+  int center{0}, max{0}, right{0}, lps[str.size()]{-1, 0};
+  for (auto i{1}; i &lt; str.size() - 1; lps[++i] = 0) {
+    if (i &lt; right)
+      lps[i] = min(right - i, lps[2 * center - i]);
+    while (str[i + lps[i] + 1] == str[i - lps[i] - 1])
+      lps[i]++;
+    if (i + lps[i] &gt; right)
+      center = i, right = i + lps[i];
+    if (lps[i] &gt; lps[max])
+      max = i;
+  }
+  return vector&lt;int&gt;{(max - lps[max] - 1) / 2, lps[max]};
+}
+</code></pre>
+
+<p>此函数接收一个<em>已经预处理过</em> 的字符串，返回一个二元数组作为 <code>std::string::substr</code> 的参数。其中 <code>max</code> 是最长回文子串再预处理后的字符串中的中心坐标，根据性质 3 可知 <code>(max - lps[max] - 1) / 2</code> 是原字符串中最长回文子串的起始下标，根据性质 2 可知 <code>lps[max]</code> 就是原字符串中最长回文子串的长度。</p></div>
+        <div class="post_footer">
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>
