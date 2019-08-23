@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="C&#43;&#43;20 计划引入 &amp;lt;=&amp;gt; 操作符，学名是 Three-Way Comparison Operator，俗称 Space Ship Operator —— 这个运算符的引入从根本上重新定义了 C&#43;&#43; 如何进行比较，并且为比较系统带来了极大的灵活性，可能会大量缩减重复代码。这篇博客就简单介绍一下 &amp;lt;=&amp;gt; 操作符的用法。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="/posts/technique/language/c&#43;&#43;/c-20-space-ship-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BB%8B%E7%BB%8D/"/>
+
+  
+
+  <title>C&#43;&#43;20 &lt;=&gt; Space-Ship 操作符介绍 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="/images/favicon.ico"/>
+  <link rel="stylesheet" href="/css/animate.min.css"/>
+  <link rel="stylesheet" href="/css/remixicon.css"/>
+  <link rel="stylesheet" href="/css/zozo.css"/>
+  <link rel="stylesheet" href="/css/highlight.css"/>
+
+  
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="/">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/language/c&#43;&#43;/c-20-space-ship-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BB%8B%E7%BB%8D/'>C&#43;&#43;20 &lt;=&gt; Space-Ship 操作符介绍</a></h2>
+          <span class="date">2019.08.09</span>
+        </div>
+        <div class="post_content markdown"><p>C++20 计划引入 <code>&lt;=&gt;</code> 操作符，学名是 Three-Way Comparison Operator，俗称 Space Ship Operator —— 这个运算符的引入从根本上重新定义了 C++ 如何进行比较，并且为比较系统带来了极大的灵活性，可能会大量缩减重复代码。这篇博客就简单介绍一下 <code>&lt;=&gt;</code> 操作符的用法。</p>
+
+<h2 id="为何引入-运算符">为何引入 &lt;=&gt; 运算符</h2>
+
+<p>在 C++ 中，所有的操作符都是同级的，不存在谁依赖于谁的关系。但是我们在为自定义类型重载比较运算符是却并不总是如此 —— 我们往往习惯先定义 <code>==</code> 与 <code>&lt;</code> 运算符，然后剩余的 <code>!=, &lt;=, &gt;, &gt;=</code> 运算符都能在这两个*基础*运算符之上定义。也就是说在语义（semantic）上，我们的比较运算符是分层级的，存在着某系基础比较运算符与在其之上衍生定义的次级运算符。</p>
+
+<p>但是使用 <code>==</code> 和 <code>&lt;</code> 作为<strong>基础比较运算符</strong>并不总是正确的。这种旧的比较运算符分层结构依赖于一个重要的假设：所有比较运算都符合三分法（trichotomy），即对于任意两个操作数 <code>a</code> 和 <code>b</code>，<code>a == b, a &lt; b, a &gt; b</code> 三者中总有一者是成立的；因为只有这样，<code>a &gt;= b</code> 与 <code>!(a &lt; b)</code> 才能是恒等价的。</p>
+
+<p>但事实并非总是如此，在部分<strong>偏序关系</strong>（partial order）中（准确地说是所有非全序关系（total order）的偏序关系），存在两个操作数 <code>a</code> 和 <code>b</code> 使得 <code>a == b, a &lt; b, a &gt; b</code> 三者中任意一者都是不成立的。例如包括 <code>NaN</code> 的实数类型中，<code>NaN</code> 不大于、不小于也不等于任何一个实数；又例如自然数集上的整除关系，我们有 2 &lt; 6、10 &gt; 5、1 == 1，但是 3 和 5 互不整除，因此也不满足 <code>==, &lt;, &gt;</code> 三者中任意的一者。</p>
+
+<p>除了解决偏序关系带来的比较问题，<code>&lt;=&gt;</code> 还解决了<strong>对称异构比较</strong>（symmetric heterogeneous comparison）的问题。在 C++17 即以前，如果我们实现了一个自己的整数类 Integer 而要将其与原始 int 类型进行比较，我们将不得不为每个运算符实现两个以上的的运算符重载函数，使得 <code>Integer @ int</code> 与 <code>int @ Integer</code> 都能正常工作（这里 <code>@</code> 代表任意比较运算符）。但是使用 <code>&lt;=&gt;</code> 运算符，你只需要实现一个 <code>operator&lt;=&gt;</code> 函数就足够了 —— 这大大减少了 C++ 编程者的重复代码。</p>
+
+<p>还值得注意的是，所有的比较运算符号都有其<strong>默认值</strong>（default）。例如对于没有重载 <code>&gt;=</code> 运算符的某种类型，编译系统会将 <code>a &gt;= b</code> 自动转换为 <code>(a &lt;=&gt; b) &gt;= 0</code>；当然你也可以显示声明 <code>bool operator&gt;=(Typename&amp;) = default;</code>。这就使得只要你正确地实现了 <code>&lt;=&gt;</code> 运算符，你就基本上不再需要为其他次级比较运算符编写重复而无意义的代码 —— 基础比较运输符的威力就在于此。</p>
+
+<h2 id="更复杂的返回值">更复杂的返回值</h2>
+
+<p>旧的运算符重载的一大问题就在于其返回值是 boolean 类型，只可能有 <code>true/false</code> 两种可能；而 <code>&lt;=&gt;</code> 运算符的返回值通常有三种可能：<code>greater/equivalent/less</code>，这使得 <code>&lt;=&gt;</code> 运算符的运算结果有了更强大的表达能力，从而能正确地处理更复杂的情况。</p>
+
+<p><code>&lt;=&gt;</code> 运算符的返回值有五种类型之多，它们分别是 <code>std::strong_ordering</code>， <code>std::weak_ordering</code>， <code>std::partial_ordering</code>， <code>std::strong_equality</code>， <code>std::weak_equality</code>，每种类型都有 2~4 种取值可能，下面我就来简单介绍一下。</p>
+
+<blockquote>
+<p>截至 2019-08-09，以下所有代码均只在 Visual Studio 2019 上测试过。MSVC 19.20+ 支持 &lt;=&gt; 运算符，Clang-8 部分支持（但我没有做测试），GCC/G++ 尚不支持。详细编译器支持请参见 <a href="https://en.cppreference.com/w/cpp/compiler_support。">https://en.cppreference.com/w/cpp/compiler_support。</a></p>
+</blockquote>
+
+<h3 id="std-strong-ordering"><code>std::strong_ordering</code></h3>
+
+<p><code>std::strong_ordering</code> 有三种取值：<code>greater/equal/less</code>，你可以简单地认为 <code>strong_ordering</code> 基本上就是我们平时最常见的比较类型，它满足全序关系。这里的 &quot;strong&quot; 表明这种比较关系中的等价关系是具有完全的可替换性（substitutability）的，也就是说对于任意函数 <code>f</code>，若 <code>a == b</code>，则恒有 <code>f(a) == f(b)</code> 成立。下面是一个简单的例子：</p>
+
+<pre><code class="language-C++">#include &lt;compare&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+
+class Integer {
+ public:
+  int value;
+  Integer(int value = 0) : value{value} {}
+  bool operator==(const Integer&amp; operand) { return value == operand.value; }
+  std::strong_ordering operator&lt;=&gt;(const Integer&amp; operand) {
+    return value &lt;=&gt; operand.value;
+  }
+  std::strong_ordering operator&lt;=&gt;(const int operand) {
+    return value &lt;=&gt; operand;
+  }
+};
+
+int main() {
+  Integer x{-1}, y{}, z{1};
+  std::cout &lt;&lt; std::boolalpha;
+  // secondary comparison operators are defaulted
+  std::cout &lt;&lt; (x &lt; y) &lt;&lt; std::endl
+            &lt;&lt; (y &lt; z) &lt;&lt; std::endl
+            &lt;&lt; (x &lt; z)
+            &lt;&lt; std::endl
+            // symmetric heterogeneous comparisons
+            &lt;&lt; (1 &lt;= x) &lt;&lt; std::endl
+            &lt;&lt; (z &gt;= 0) &lt;&lt; std::endl
+            &lt;&lt; (-1 &gt; y) &lt;&lt; std::endl;
+  return 0;
+}
+</code></pre>
+
+<p>你还需要知道的是，<code>&lt;=&gt;</code> 运输符也是有默认值的。默认情况下，<code>&lt;=&gt;</code> 会对每一个成员应用 <code>&lt;=&gt;</code> 运算符，先被声明的成员具有更高的优先级 —— 这就像比较两个位数相同的整数，我们会先比较高位，若高位不同就直接返回比较结果，若高位相同再比较下一位。例如：</p>
+
+<pre><code class="language-c++">#include &lt;compare&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+
+class Vector {
+ public:
+  int x, y;
+  Vector(int x, int y) : x{x}, y{y} {}
+  std::strong_ordering operator&lt;=&gt;(const Vector&amp;) = default;
+};
+
+int main() {
+  Vector v1{1, 2}, v2{2, 6}, v3{3, 4};
+  std::cout &lt;&lt; std::boolalpha;
+  std::cout &lt;&lt; (v1 &lt; v2) &lt;&lt; std::endl &lt;&lt; (v2 &lt; v3) &lt;&lt; std::endl;
+  return 0;
+}
+</code></pre>
+
+<p>这个例子会输出 &quot;true true&quot;。但如果我们调换 x，y 的声明顺序（写成 <code>int y, x;</code>）就会输出 &quot;true false&quot;，因为按照声明顺序变量 y 具有更高的优先级。</p>
+
+<h3 id="std-weak-ordering"><code>std::weak_ordering</code></h3>
+
+<p><code>std::weak_ordering</code> 同样也是全序关系，其取值有三种可能：<code>greater/equivalent/less</code>。之所以使用 &quot;weak&quot; 来修饰，是因为这里的等价只代表了一种等价类（equivalent class）关系 —— 也就是说，一定存在某个函数 <code>f</code>，使得存在某一对 <code>a == b</code> 满足 <code>f(a) != f(b)</code>。</p>
+
+<blockquote>
+<p>注意：<code>std::strong_ordering::equivalent</code> 同样存在，且与 <code>std::strong_ordering::equal</code> 是完全等价的。通常推荐在泛型编程（generic type programming）中使用 <code>equivalent</code> 关键字，因为 <code>&lt;=&gt;</code> 操作符的五种返回类型都支持；而 <code>equal</code> 则只被 <code>strong_ordering</code> 与 <code>strong_equality</code> 支持。</p>
+</blockquote>
+
+<p>一个简单的等价类例子：</p>
+
+<pre><code class="language-c++">#include &lt;compare&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+
+class IntMod {
+ public:
+  int value;
+  IntMod(int value) : value{value} {}
+  bool operator==(const IntMod&amp; operand) const {
+    return (value % 3) == (operand.value % 3);
+  }
+  std::weak_ordering operator&lt;=&gt;(const IntMod&amp; operand) const {
+    return (value % 3) &lt;=&gt; (operand.value % 3);
+  }
+};
+
+int f(IntMod x) { return x.value; }
+
+int main() {
+  IntMod a{1}, b{4}, c{2};
+  std::cout &lt;&lt; std::boolalpha;
+  std::cout &lt;&lt; (a == b) &lt;&lt; std::endl
+            &lt;&lt; (b &lt; c) &lt;&lt; std::endl
+            &lt;&lt; (f(a) == f(b)) &lt;&lt; std::endl;
+  return 0;
+}
+</code></pre>
+
+<p>输出为 &quot;true true false&quot;。需要注意的是 <code>operator&lt;=&gt;(int, int)</code> 的默认返回类型是 <code>std::strong_ordering</code>，不过这里被隐式转换成 <code>std::weak_ordering</code>。</p>
+
+<h3 id="std-partial-ordering"><code>std::partial_ordering</code></h3>
+
+<p>这种返回类型代表我们无法保证满足三分法；一个典型的例子就是 NaN，因为 NaN 不大于、小于或等于任何数，包括它自身。下面这个例子简单地实现一个 <code>IntNan</code> 类型：</p>
+
+<pre><code class="language-c++">#include &lt;compare&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;optional&gt;
+
+class IntNan {
+ public:
+  std::optional&lt;int&gt; val = std::nullopt;
+  IntNan() = default;
+  IntNan(const int value) { val = value; }
+  bool operator==(const IntNan&amp; operand) const {
+    if (!val || !operand.val) return false;
+    return *val == *operand.val;
+  }
+  std::partial_ordering operator&lt;=&gt;(const IntNan&amp; operand) const {
+    if (!val || !operand.val) return std::partial_ordering::unordered;
+    return *val &lt;=&gt; *operand.val;
+  }
+};
+
+int main() {
+  IntNan a{}, b{1}, c{1}, d{2};
+  std::cout &lt;&lt; std::boolalpha;
+  std::cout &lt;&lt; (a == b) &lt;&lt; std::endl
+            &lt;&lt; (b == c) &lt;&lt; std::endl
+            &lt;&lt; (a == d) &lt;&lt; std::endl
+            &lt;&lt; (b == d) &lt;&lt; std::endl;
+  return 0;
+}
+</code></pre>
+
+<p>输出为 &quot;false true false false&quot;。</p>
+
+<p>这段代码实现的特殊之处在于 <code>partial_ordering::unordered</code> 这个特殊取值。通常来说，<code>&lt;=&gt;</code> 的返回值有三种可能：<code>*_ordering::greater &gt; 0</code>， <code>*_ordering::equal == 0</code> 或 <code>*_ordering::equivalent == 0</code> 和 <code>*_ordering:less &lt; 0</code> —— 这也是三路比较运算符（Three-Way Comparison Operator）这个名字的由来。但是 <code>partial_ordering</code> 还有第四种可能取值 <code>unordered</code> ，且 <code>unordered == 0</code> <code>unordered &gt; 0</code> <code>unordered &lt; 0</code> 均不成立 —— 正是 <code>unordered</code> 的这一特殊性质使得我们能够实现不满足三分法的偏序关系。</p>
+
+<h3 id="std-strong-equality-与-std-weak-equality"><code>std::strong_equality</code> 与 <code>std::weak_equality</code></h3>
+
+<p><code>*_equality</code> 返回类型与 <code>*_ordering</code> 返回类型的主要区别就在于是否支持 &lt; 比较：前者只存在相等或不相等的关系，后者则提供了更为具体的大小比较。类似的，这里 <code>strong</code> 与 <code>weak</code> 地区别就在于：<code>strong</code> 表示了明确的相等关系，而 <code>weak</code> 则引入了等价类的概念。</p>
+
+<p>然而 MSVC 编译器目前对这两种类型的支持似乎与 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0515r3.pdf">open-std paper</a> 的描述还有出入，我无法使代码在 Visual Studio 2019 上成功地运行起来（也可能是我没能正确地理解 Paper）。总之这个问题就留到 2020 年再谈吧 &gt;_&lt;！</p>
+
+<h2 id="注意事项">注意事项</h2>
+
+<ul>
+<li><p>上述五种类型的返回值均能与整数 0 作比较，也<em>只能</em> 与整数 0 作比较。一般的，我们有 <code>*::greater &gt; 0</code>，<code>*::less &lt; 0</code> 和 <code>*::equivalent == 0</code>；对于特殊的 <code>partial_ordering::unordered</code>，<code>&gt;,==,&lt;</code> 三者均不成立。</p></li>
+
+<li><p>这五种类型之间存在着隐式类型转换，转换关系如下：</p>
+
+<ul>
+<li><code>strong_ordering</code> 能转换为 <code>weak_ordering</code>，<code>partial_ordering</code>，<code>strong_equality</code> 与 <code>weak_equality</code></li>
+<li><code>weak_ordering</code> 能转换为 <code>partial_ordering</code> 与 <code>weak_equality</code></li>
+<li><code>partial_ordering</code> 与 <code>strong_equality</code> 均只能转换为 <code>weak_equality</code></li>
+<li><code>weak_equality</code> 不能转换为其他任意四种类型</li>
+</ul></li>
+</ul>
+
+<p>这种隐式转换对应着一种严格的 &quot;IS-A&quot; 关系，标准库一般也是通过类继承来实现这一关系的。</p>
+
+<ul>
+<li><p>设存在 <code>a == b</code>，如果不存在任何函数 <code>f</code> 使得 <code>f(a) != f(b)</code>，那么这种关系是 <code>strong_*</code>；反之则为 <code>weak_*</code></p></li>
+
+<li><p>如果比较关系支持 &lt; 运算，那么这种关系为 <code>*_ordering</code>；反之则为 <code>*_equality</code></p></li>
+</ul>
+
+<hr />
+
+<p><strong>参考文献</strong>：</p>
+
+<ul>
+<li><a href="https://brevzin.github.io/c++/2019/07/28/comparisons-cpp20/">Barry Revzin's Blog: Comparisons in C++20</a></li>
+<li><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0515r3.pdf">Open-Std Paper: P0515</a></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/c&#43;&#43;/">c&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/zozo.js"></script>
+<script src="/js/highlight.pack.js"></script>
+<link  href="/css/fancybox.min.css" rel="stylesheet">
+<script src="/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

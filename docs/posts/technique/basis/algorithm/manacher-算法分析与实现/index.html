@@ -227,8 +227,30 @@ Manacher 算法是一种能以 O(n) 的时间复杂度找出一个字符串里�
 }
 </code></pre>
 
-<p>此函数接收一个<em>已经预处理过</em> 的字符串，返回一个二元数组作为 <code>std::string::substr</code> 的参数。其中 <code>max</code> 是最长回文子串再预处理后的字符串中的中心坐标，根据性质 3 可知 <code>(max - lps[max] - 1) / 2</code> 是原字符串中最长回文子串的起始下标，根据性质 2 可知 <code>lps[max]</code> 就是原字符串中最长回文子串的长度。</p></div>
+<p>此函数接收一个<em>已经预处理过</em> 的字符串，返回一个二元数组作为 <code>std::string::substr</code> 的参数。其中 <code>max</code> 是最长回文子串再预处理后的字符串中的中心坐标，根据性质 3 可知 <code>(max - lps[max] - 1) / 2</code> 是原字符串中最长回文子串的起始下标，根据性质 2 可知 <code>lps[max]</code> 就是原字符串中最长回文子串的长度。</p>
+
+<hr />
+
+<p><strong>参考文献</strong>：</p>
+
+<ul>
+<li><a href="https://blog.crimx.com/2017/07/06/manachers-algorithm/">Crimx's Blog: Manacher 马拉车算法</a></li>
+<li><a href="https://leetcode-cn.com/problems/longest-palindromic-substring/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-bao-gu/">LeetCode: Longest Palindromic Substring</a></li>
+</ul></div>
         <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="/tags/algorithm/">algorithm</a>
+                
+                <a href="/tags/c&#43;&#43;/">c&#43;&#43;</a>
+                
+              </span>
+            </div>
+          </div>
           
         </div>
       </div>

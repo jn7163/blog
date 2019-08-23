@@ -2,6 +2,9 @@
 title: "Manacher 算法分析与实现"
 date: 2019-08-07T18:58:57+08:00
 draft: false
+tags:
+  - algorithm
+  - c++
 ---
 
 最近刚做完 Leetcode 上的 [Longest Palindromic Substring](https://leetcode-cn.com/problems/longest-palindromic-substring/)，用的是 Manacher 算法（国内俗称马拉车算法）。之前高中打 OI 时也做过同样的题目，不过当时是作为动态规划的例题来介绍的；再加上后来~~我没认真学 Manacher 算法~~，所以直到这几天才算是初步学习了该算法。
@@ -89,3 +92,10 @@ string manacher(string &str) {
 ```
 
 此函数接收一个*已经预处理过* 的字符串，返回一个二元数组作为 `std::string::substr` 的参数。其中 `max` 是最长回文子串再预处理后的字符串中的中心坐标，根据性质 3 可知 `(max - lps[max] - 1) / 2` 是原字符串中最长回文子串的起始下标，根据性质 2 可知 `lps[max]` 就是原字符串中最长回文子串的长度。
+
+---
+
+**参考文献**：
+
+- [Crimx's Blog: Manacher 马拉车算法](https://blog.crimx.com/2017/07/06/manachers-algorithm/)
+- [LeetCode: Longest Palindromic Substring](https://leetcode-cn.com/problems/longest-palindromic-substring/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-bao-gu/)
