@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://qufy.me"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"
 title = "Queensferry's Blog"
@@ -44,6 +44,7 @@ publishDir = "docs"
   description = "Queensferry's Blog"
   enableMathJax = true
   enableSummary = true
+  customCSS = ["custom.css"]
   
 # Valine.
 # You can get your appid and appkey from https://leancloud.cn

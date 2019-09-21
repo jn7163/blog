@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>manjaro on Queensferry&#39;s Blog</title>
-    <link>/tags/manjaro/</link>
+    <link>https://qufy.me/tags/manjaro/</link>
     <description>Recent content in manjaro on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 22 Jun 2018 19:01:01 +0000</lastBuildDate>
     
-	<atom:link href="/tags/manjaro/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qufy.me/tags/manjaro/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Manjaro Linux &#43; KDE 安装使用手记</title>
-      <link>/posts/technique/other/manjaro-linux-kde-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%89%8B%E8%AE%B0/</link>
+      <link>https://qufy.me/posts/technique/other/manjaro-linux-kde-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%89%8B%E8%AE%B0/</link>
       <pubDate>Fri, 22 Jun 2018 19:01:01 +0000</pubDate>
       
-      <guid>/posts/technique/other/manjaro-linux-kde-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%89%8B%E8%AE%B0/</guid>
+      <guid>https://qufy.me/posts/technique/other/manjaro-linux-kde-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%89%8B%E8%AE%B0/</guid>
       <description>&lt;p&gt;“&lt;code&gt;Manjaro&lt;/code&gt;是一款基于 Arch Linux、对用户友好的 Linux 发行版。” 有多友好呢？在与 Debian 苦战两天无果之后，我用短短半个小时就让 Manjaro 在我老旧的笔记本上跑了起来。再加上内容丰富的 Arch Wiki 使得我在遇到问题时都有据可循，我毫不犹豫地弃 Debian 转 Manjaro。&lt;/p&gt;</description>
     </item>
     

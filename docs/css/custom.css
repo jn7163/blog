@@ -1,0 +1,15 @@
+.markdown strong,
+.markdown b,
+.markdown em {
+  background-color: inherit;
+  font-weight: bold;
+}
+
+.markdown table {
+  border-spacing: 0;
+}
+
+.markdown table th, .markdown table td {
+  border: 1px solid #333333;
+  padding: 5px 15px;
+}

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>terminal on Queensferry&#39;s Blog</title>
-    <link>/tags/terminal/</link>
+    <link>https://qufy.me/tags/terminal/</link>
     <description>Recent content in terminal on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 09 Jul 2018 21:29:11 +0000</lastBuildDate>
     
-	<atom:link href="/tags/terminal/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qufy.me/tags/terminal/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Termux 安装配置：Android 上的 Linux 终端</title>
-      <link>/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/</link>
+      <link>https://qufy.me/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/</link>
       <pubDate>Mon, 09 Jul 2018 21:29:11 +0000</pubDate>
       
-      <guid>/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/</guid>
+      <guid>https://qufy.me/posts/technique/other/termux-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEandroid-%E4%B8%8A%E7%9A%84-linux-%E7%BB%88%E7%AB%AF/</guid>
       <description>&lt;p&gt;Termux 是一款强大的 Android 终端模拟器。它会在你的手机上安装一个无需 root 权限即可使用的最小化 Linux 系统，并且支持 apt 等包管理器 。常见的用法就是通过 SSH 将手机与 PC 端连接起来 。今天就记录一下 Termux 的安装配置流程。&lt;/p&gt;</description>
     </item>
     

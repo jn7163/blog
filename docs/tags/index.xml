@@ -2,273 +2,273 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Queensferry&#39;s Blog</title>
-    <link>/tags/</link>
+    <link>https://qufy.me/tags/</link>
     <description>Recent content in Tags on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 09 Aug 2019 13:32:36 +0800</lastBuildDate>
     
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qufy.me/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>c&#43;&#43;</title>
-      <link>/tags/c&#43;&#43;/</link>
+      <link>https://qufy.me/tags/c&#43;&#43;/</link>
       <pubDate>Fri, 09 Aug 2019 13:32:36 +0800</pubDate>
       
-      <guid>/tags/c&#43;&#43;/</guid>
+      <guid>https://qufy.me/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
     <item>
       <title>algorithm</title>
-      <link>/tags/algorithm/</link>
+      <link>https://qufy.me/tags/algorithm/</link>
       <pubDate>Wed, 07 Aug 2019 18:58:57 +0800</pubDate>
       
-      <guid>/tags/algorithm/</guid>
+      <guid>https://qufy.me/tags/algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>prose</title>
-      <link>/tags/prose/</link>
+      <link>https://qufy.me/tags/prose/</link>
       <pubDate>Tue, 30 Apr 2019 20:01:07 +0000</pubDate>
       
-      <guid>/tags/prose/</guid>
+      <guid>https://qufy.me/tags/prose/</guid>
       <description></description>
     </item>
     
     <item>
       <title>c</title>
-      <link>/tags/c/</link>
+      <link>https://qufy.me/tags/c/</link>
       <pubDate>Sun, 21 Apr 2019 08:09:04 +0000</pubDate>
       
-      <guid>/tags/c/</guid>
+      <guid>https://qufy.me/tags/c/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linux</title>
-      <link>/tags/linux/</link>
+      <link>https://qufy.me/tags/linux/</link>
       <pubDate>Sun, 21 Apr 2019 08:09:04 +0000</pubDate>
       
-      <guid>/tags/linux/</guid>
+      <guid>https://qufy.me/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>shell</title>
-      <link>/tags/shell/</link>
+      <link>https://qufy.me/tags/shell/</link>
       <pubDate>Sun, 21 Apr 2019 08:09:04 +0000</pubDate>
       
-      <guid>/tags/shell/</guid>
+      <guid>https://qufy.me/tags/shell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>syscall</title>
-      <link>/tags/syscall/</link>
+      <link>https://qufy.me/tags/syscall/</link>
       <pubDate>Sun, 21 Apr 2019 08:09:04 +0000</pubDate>
       
-      <guid>/tags/syscall/</guid>
+      <guid>https://qufy.me/tags/syscall/</guid>
       <description></description>
     </item>
     
     <item>
       <title>comment</title>
-      <link>/tags/comment/</link>
+      <link>https://qufy.me/tags/comment/</link>
       <pubDate>Tue, 02 Apr 2019 15:47:24 +0000</pubDate>
       
-      <guid>/tags/comment/</guid>
+      <guid>https://qufy.me/tags/comment/</guid>
       <description></description>
     </item>
     
     <item>
       <title>celery</title>
-      <link>/tags/celery/</link>
+      <link>https://qufy.me/tags/celery/</link>
       <pubDate>Sun, 31 Mar 2019 16:40:16 +0000</pubDate>
       
-      <guid>/tags/celery/</guid>
+      <guid>https://qufy.me/tags/celery/</guid>
       <description></description>
     </item>
     
     <item>
       <title>flask</title>
-      <link>/tags/flask/</link>
+      <link>https://qufy.me/tags/flask/</link>
       <pubDate>Sun, 31 Mar 2019 16:40:16 +0000</pubDate>
       
-      <guid>/tags/flask/</guid>
+      <guid>https://qufy.me/tags/flask/</guid>
       <description></description>
     </item>
     
     <item>
       <title>python</title>
-      <link>/tags/python/</link>
+      <link>https://qufy.me/tags/python/</link>
       <pubDate>Sun, 31 Mar 2019 16:40:16 +0000</pubDate>
       
-      <guid>/tags/python/</guid>
+      <guid>https://qufy.me/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>redis</title>
-      <link>/tags/redis/</link>
+      <link>https://qufy.me/tags/redis/</link>
       <pubDate>Sun, 31 Mar 2019 16:40:16 +0000</pubDate>
       
-      <guid>/tags/redis/</guid>
+      <guid>https://qufy.me/tags/redis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>task queue</title>
-      <link>/tags/task-queue/</link>
+      <link>https://qufy.me/tags/task-queue/</link>
       <pubDate>Sun, 31 Mar 2019 16:40:16 +0000</pubDate>
       
-      <guid>/tags/task-queue/</guid>
+      <guid>https://qufy.me/tags/task-queue/</guid>
       <description></description>
     </item>
     
     <item>
       <title>virtual</title>
-      <link>/tags/virtual/</link>
+      <link>https://qufy.me/tags/virtual/</link>
       <pubDate>Fri, 29 Mar 2019 17:36:26 +0000</pubDate>
       
-      <guid>/tags/virtual/</guid>
+      <guid>https://qufy.me/tags/virtual/</guid>
       <description></description>
     </item>
     
     <item>
       <title>design pattern</title>
-      <link>/tags/design-pattern/</link>
+      <link>https://qufy.me/tags/design-pattern/</link>
       <pubDate>Tue, 05 Mar 2019 19:18:10 +0000</pubDate>
       
-      <guid>/tags/design-pattern/</guid>
+      <guid>https://qufy.me/tags/design-pattern/</guid>
       <description></description>
     </item>
     
     <item>
       <title>smtp</title>
-      <link>/tags/smtp/</link>
+      <link>https://qufy.me/tags/smtp/</link>
       <pubDate>Sat, 19 Jan 2019 12:04:16 +0000</pubDate>
       
-      <guid>/tags/smtp/</guid>
+      <guid>https://qufy.me/tags/smtp/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cgi</title>
-      <link>/tags/cgi/</link>
+      <link>https://qufy.me/tags/cgi/</link>
       <pubDate>Sun, 30 Dec 2018 12:33:47 +0000</pubDate>
       
-      <guid>/tags/cgi/</guid>
+      <guid>https://qufy.me/tags/cgi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>vue</title>
-      <link>/tags/vue/</link>
+      <link>https://qufy.me/tags/vue/</link>
       <pubDate>Sat, 22 Dec 2018 16:36:45 +0000</pubDate>
       
-      <guid>/tags/vue/</guid>
+      <guid>https://qufy.me/tags/vue/</guid>
       <description></description>
     </item>
     
     <item>
       <title>https</title>
-      <link>/tags/https/</link>
+      <link>https://qufy.me/tags/https/</link>
       <pubDate>Wed, 28 Nov 2018 18:22:45 +0000</pubDate>
       
-      <guid>/tags/https/</guid>
+      <guid>https://qufy.me/tags/https/</guid>
       <description></description>
     </item>
     
     <item>
       <title>nginx</title>
-      <link>/tags/nginx/</link>
+      <link>https://qufy.me/tags/nginx/</link>
       <pubDate>Wed, 28 Nov 2018 18:22:45 +0000</pubDate>
       
-      <guid>/tags/nginx/</guid>
+      <guid>https://qufy.me/tags/nginx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>function</title>
-      <link>/tags/function/</link>
+      <link>https://qufy.me/tags/function/</link>
       <pubDate>Fri, 16 Nov 2018 19:17:31 +0000</pubDate>
       
-      <guid>/tags/function/</guid>
+      <guid>https://qufy.me/tags/function/</guid>
       <description></description>
     </item>
     
     <item>
       <title>javascript</title>
-      <link>/tags/javascript/</link>
+      <link>https://qufy.me/tags/javascript/</link>
       <pubDate>Fri, 16 Nov 2018 19:17:31 +0000</pubDate>
       
-      <guid>/tags/javascript/</guid>
+      <guid>https://qufy.me/tags/javascript/</guid>
       <description></description>
     </item>
     
     <item>
       <title>docker</title>
-      <link>/tags/docker/</link>
+      <link>https://qufy.me/tags/docker/</link>
       <pubDate>Tue, 30 Oct 2018 08:38:23 +0000</pubDate>
       
-      <guid>/tags/docker/</guid>
+      <guid>https://qufy.me/tags/docker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>mysql</title>
-      <link>/tags/mysql/</link>
+      <link>https://qufy.me/tags/mysql/</link>
       <pubDate>Tue, 30 Oct 2018 08:38:23 +0000</pubDate>
       
-      <guid>/tags/mysql/</guid>
+      <guid>https://qufy.me/tags/mysql/</guid>
       <description></description>
     </item>
     
     <item>
       <title>mini program</title>
-      <link>/tags/mini-program/</link>
+      <link>https://qufy.me/tags/mini-program/</link>
       <pubDate>Thu, 26 Jul 2018 21:20:27 +0000</pubDate>
       
-      <guid>/tags/mini-program/</guid>
+      <guid>https://qufy.me/tags/mini-program/</guid>
       <description></description>
     </item>
     
     <item>
       <title>wechat</title>
-      <link>/tags/wechat/</link>
+      <link>https://qufy.me/tags/wechat/</link>
       <pubDate>Thu, 26 Jul 2018 21:20:27 +0000</pubDate>
       
-      <guid>/tags/wechat/</guid>
+      <guid>https://qufy.me/tags/wechat/</guid>
       <description></description>
     </item>
     
     <item>
       <title>android</title>
-      <link>/tags/android/</link>
+      <link>https://qufy.me/tags/android/</link>
       <pubDate>Mon, 09 Jul 2018 21:29:11 +0000</pubDate>
       
-      <guid>/tags/android/</guid>
+      <guid>https://qufy.me/tags/android/</guid>
       <description></description>
     </item>
     
     <item>
       <title>terminal</title>
-      <link>/tags/terminal/</link>
+      <link>https://qufy.me/tags/terminal/</link>
       <pubDate>Mon, 09 Jul 2018 21:29:11 +0000</pubDate>
       
-      <guid>/tags/terminal/</guid>
+      <guid>https://qufy.me/tags/terminal/</guid>
       <description></description>
     </item>
     
     <item>
       <title>manjaro</title>
-      <link>/tags/manjaro/</link>
+      <link>https://qufy.me/tags/manjaro/</link>
       <pubDate>Fri, 22 Jun 2018 19:01:01 +0000</pubDate>
       
-      <guid>/tags/manjaro/</guid>
+      <guid>https://qufy.me/tags/manjaro/</guid>
       <description></description>
     </item>
     

@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>c&#43;&#43; on Queensferry&#39;s Blog</title>
-    <link>/tags/c&#43;&#43;/</link>
+    <link>https://qufy.me/tags/c&#43;&#43;/</link>
     <description>Recent content in c&#43;&#43; on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 09 Aug 2019 13:32:36 +0800</lastBuildDate>
     
-	<atom:link href="/tags/c++/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qufy.me/tags/c++/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>C&#43;&#43;20 &lt;=&gt; Space-Ship 操作符介绍</title>
-      <link>/posts/technique/language/c&#43;&#43;/c-20-space-ship-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BB%8B%E7%BB%8D/</link>
+      <link>https://qufy.me/posts/technique/language/c&#43;&#43;/c-20-space-ship-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BB%8B%E7%BB%8D/</link>
       <pubDate>Fri, 09 Aug 2019 13:32:36 +0800</pubDate>
       
-      <guid>/posts/technique/language/c&#43;&#43;/c-20-space-ship-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BB%8B%E7%BB%8D/</guid>
+      <guid>https://qufy.me/posts/technique/language/c&#43;&#43;/c-20-space-ship-%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BB%8B%E7%BB%8D/</guid>
       <description>&lt;p&gt;C++20 计划引入 &lt;code&gt;&amp;lt;=&amp;gt;&lt;/code&gt; 操作符，学名是 Three-Way Comparison Operator，俗称 Space Ship Operator —— 这个运算符的引入从根本上重新定义了 C++ 如何进行比较，并且为比较系统带来了极大的灵活性，可能会大量缩减重复代码。这篇博客就简单介绍一下 &lt;code&gt;&amp;lt;=&amp;gt;&lt;/code&gt; 操作符的用法。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Manacher 算法分析与实现</title>
-      <link>/posts/technique/basis/algorithm/manacher-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/</link>
+      <link>https://qufy.me/posts/technique/basis/algorithm/manacher-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/</link>
       <pubDate>Wed, 07 Aug 2019 18:58:57 +0800</pubDate>
       
-      <guid>/posts/technique/basis/algorithm/manacher-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/</guid>
+      <guid>https://qufy.me/posts/technique/basis/algorithm/manacher-%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/</guid>
       <description>&lt;p&gt;最近刚做完 Leetcode 上的 &lt;a href=&#34;https://leetcode-cn.com/problems/longest-palindromic-substring/&#34;&gt;Longest Palindromic Substring&lt;/a&gt;，用的是 Manacher 算法（国内俗称马拉车算法）。之前高中打 OI 时也做过同样的题目，不过当时是作为动态规划的例题来介绍的；再加上后来&lt;del&gt;我没认真学 Manacher 算法&lt;/del&gt;，所以直到这几天才算是初步学习了该算法。&lt;/p&gt;
 
 &lt;p&gt;Manacher 算法是一种能以 O(n) 的时间复杂度找出一个字符串里的所有回文子串的算法。相比于暴力搜索（O(n^3)）与动态规划/中心扩展（O(n^2)），它的时间复杂度要低得多。这篇博客就简单记录一下我对 Manacher 算法的理解。&lt;/p&gt;</description>
@@ -33,10 +33,10 @@
     
     <item>
       <title>C&#43;&#43; virtual 关键字浅析：多态、抽象与多继承</title>
-      <link>/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</link>
+      <link>https://qufy.me/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</link>
       <pubDate>Fri, 29 Mar 2019 17:36:26 +0000</pubDate>
       
-      <guid>/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</guid>
+      <guid>https://qufy.me/posts/technique/language/c&#43;&#43;/c-virtual-%E5%85%B3%E9%94%AE%E5%AD%97%E6%B5%85%E6%9E%90%E5%A4%9A%E6%80%81%E6%8A%BD%E8%B1%A1%E4%B8%8E%E5%A4%9A%E7%BB%A7%E6%89%BF/</guid>
       <description>&lt;p&gt;C++ 的&lt;strong&gt;虚函数&lt;/strong&gt;算是比较高级的语法特性之一，通过 &lt;code&gt;virutal&lt;/code&gt; 关键字来定义，主要用于实现面向对象编程中的多态；&lt;code&gt;virtual&lt;/code&gt; 关键字还可以用来定义&lt;strong&gt;纯&lt;/strong&gt;虚函数，主要用于实现面向对象编程中的抽象；而且多继承的实现也需要用到 &lt;code&gt;virtual&lt;/code&gt; 关键字 。既然 &lt;code&gt;virutal&lt;/code&gt; 关键字这么有用，那就写（水）篇博客记录一下吧！&lt;/p&gt;</description>
     </item>
     

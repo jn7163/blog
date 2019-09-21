@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>nginx on Queensferry&#39;s Blog</title>
-    <link>/tags/nginx/</link>
+    <link>https://qufy.me/tags/nginx/</link>
     <description>Recent content in nginx on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 28 Nov 2018 18:22:45 +0000</lastBuildDate>
     
-	<atom:link href="/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qufy.me/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Let&#39;s Encrypt 证书配置：使用 acme.sh 自动化工具</title>
-      <link>/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/</link>
+      <link>https://qufy.me/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/</link>
       <pubDate>Wed, 28 Nov 2018 18:22:45 +0000</pubDate>
       
-      <guid>/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/</guid>
+      <guid>https://qufy.me/posts/technique/web/devops/let-s-encrypt-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8-acme-sh-%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7/</guid>
       <description>&lt;p&gt;最近学习浏览器的 Notification API，想要完成一个具有类原生推送功能的页面 。但在部署过程中发现 Chrome 等现代浏览器大多只允许 https 网站发送通知，所以借此机会配置一下 Nginx 服务器的 ssl 访问 。我选择的是开源免费的 Let&#39;s Encrypt 证书和一套非常方便的 acme (Automatic Certificate Management Environment) 工具 &lt;a href=&#34;https://github.com/Neilpang/acme.sh&#34;&gt;acme.sh&lt;/a&gt; 。&lt;/p&gt;</description>
     </item>
     

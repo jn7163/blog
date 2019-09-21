@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>vue on Queensferry&#39;s Blog</title>
-    <link>/tags/vue/</link>
+    <link>https://qufy.me/tags/vue/</link>
     <description>Recent content in vue on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sat, 22 Dec 2018 16:36:45 +0000</lastBuildDate>
     
-	<atom:link href="/tags/vue/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://qufy.me/tags/vue/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>基于 Vue.js 实现递归树形导航栏组件以及页面锚点同步滚动</title>
-      <link>/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/</link>
+      <link>https://qufy.me/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/</link>
       <pubDate>Sat, 22 Dec 2018 16:36:45 +0000</pubDate>
       
-      <guid>/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/</guid>
+      <guid>https://qufy.me/posts/technique/web/frontend/%E5%9F%BA%E4%BA%8E-vue-js-%E5%AE%9E%E7%8E%B0%E9%80%92%E5%BD%92%E6%A0%91%E5%BD%A2%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%BB%84%E4%BB%B6%E4%BB%A5%E5%8F%8A%E9%A1%B5%E9%9D%A2%E9%94%9A%E7%82%B9%E5%90%8C%E6%AD%A5%E6%BB%9A%E5%8A%A8/</guid>
       <description>&lt;p&gt;这篇博客的标题不是很直观 —— 事实上就是实现了类似百度百科（&lt;em&gt;以及本博客&lt;/em&gt; ）的导航栏效果 。可以这样描述核心功能：&lt;/p&gt;
 
 &lt;ul&gt;
