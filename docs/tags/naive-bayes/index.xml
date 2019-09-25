@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>naive bayes on Queensferry&#39;s Blog</title>
+    <link>https://qufy.me/tags/naive-bayes/</link>
+    <description>Recent content in naive bayes on Queensferry&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 25 Sep 2019 09:40:19 +0800</lastBuildDate>
+    
+	<atom:link href="https://qufy.me/tags/naive-bayes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Naive Bayes Classifier 简洁教程</title>
+      <link>https://qufy.me/posts/technique/ml/naive-bayes-classifier-%E7%AE%80%E6%B4%81%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Wed, 25 Sep 2019 09:40:19 +0800</pubDate>
+      
+      <guid>https://qufy.me/posts/technique/ml/naive-bayes-classifier-%E7%AE%80%E6%B4%81%E6%95%99%E7%A8%8B/</guid>
+      <description>&lt;p&gt;本文将简单的介绍朴素贝叶斯分类器（Naive Bayes Classifier）的数学原理，包括贝叶斯定理、朴素贝叶斯分类器、参数估计、Laplace 校准等。用 numpy 实现 Naive Bayes Classifier 并不困难，各类机器学习框架中大多也已有高可用的实现，因此本文不会再代码细节上多做赘述。&lt;/p&gt;
+
+&lt;p&gt;Naive Bayes Classifier 其实相当“朴素”，抛开对“机器学习”这一名词的无端恐惧，你就会发现其本只不过是一些列的概率计算 —— 下面就开始正文。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

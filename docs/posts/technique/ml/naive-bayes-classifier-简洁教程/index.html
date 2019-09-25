@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-cn" >
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  
+  <meta name="author"
+        content="Queensferry"/>
+
+  
+  <meta name="description" content="本文将简单的介绍朴素贝叶斯分类器（Naive Bayes Classifier）的数学原理，包括贝叶斯定理、朴素贝叶斯分类器、参数估计、Laplace 校准等。用 numpy 实现 Naive Bayes Classifier 并不困难，各类机器学习框架中大多也已有高可用的实现，因此本文不会再代码细节上多做赘述。
+Naive Bayes Classifier 其实相当“朴素”，抛开对“机器学习”这一名词的无端恐惧，你就会发现其本只不过是一些列的概率计算 —— 下面就开始正文。
+"/>
+  
+
+  
+  
+  <meta name="keywords" content="Hugo, blog"/>
+  
+
+  
+  <link rel="canonical" href="https://qufy.me/posts/technique/ml/naive-bayes-classifier-%E7%AE%80%E6%B4%81%E6%95%99%E7%A8%8B/"/>
+
+  
+
+  <title>Naive Bayes Classifier 简洁教程 &middot; Queensferry&#39;s Blog</title>
+
+  <link rel="shortcut icon" href="https://qufy.me/images/favicon.ico"/>
+  <link rel="stylesheet" href="https://qufy.me/css/animate.min.css"/>
+  <link rel="stylesheet" href="https://qufy.me/css/remixicon.css"/>
+  <link rel="stylesheet" href="https://qufy.me/css/zozo.css"/>
+  <link rel="stylesheet" href="https://qufy.me/css/highlight.css"/>
+
+  
+  
+  <link rel="stylesheet" href="https://qufy.me/css/custom.css">
+  
+</head>
+
+<body>
+<div class="main animated">
+  <div class="nav_container animated fadeInDown">
+  <div class="site_nav" id="site_nav">
+    <ul>
+      
+      <li>
+        <a href="/">首页</a>
+      </li>
+      
+      <li>
+        <a href="/posts/">归档</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">标签</a>
+      </li>
+      
+      <li>
+        <a href="/about/">关于</a>
+      </li>
+      
+    </ul>
+  </div>
+  <div class="menu_icon">
+    <a id="menu_icon"><i class="remixicon-links-line"></i></a>
+  </div>
+</div>
+
+  <div class="header animated fadeInDown">
+  <div class="site_title_container">
+    <div class="site_title">
+      <h1>
+        <a href="https://qufy.me">
+          <span>Queensferry&#39;s Blog</span>
+          <img src="https://qufy.me/images/logo.svg"/>
+        </a>
+      </h1>
+    </div>
+    <div class="description">
+      <p class="sub_title">长桥寂寞春寒夜</p>
+      <div class="my_socials">
+        
+        
+        <a href="https://github.com/queensferryme" title="github" target="_blank"><i class="remixicon-github-fill"></i></a>
+        
+        
+        
+        <a href="https://t.me/queensferryme" title="telegram" target="_blank"><i class="remixicon-telegram-fill"></i></a>
+        
+        
+        
+        <a href="https://twitter.com/queensferryme" title="twitter" target="_blank"><i class="remixicon-twitter-fill"></i></a>
+        
+        
+        <a href="https://qufy.me/index.xml" type="application/rss+xml" title="rss" target="_blank"><i class="remixicon-rss-fill"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="content">
+    <div class="post_page">
+      <div class="post animated fadeInDown">
+        <div class="post_title post_detail_title">
+          <h2><a href='/posts/technique/ml/naive-bayes-classifier-%E7%AE%80%E6%B4%81%E6%95%99%E7%A8%8B/'>Naive Bayes Classifier 简洁教程</a></h2>
+          <span class="date">2019.09.25</span>
+        </div>
+        <div class="post_content markdown"><p>本文将简单的介绍朴素贝叶斯分类器（Naive Bayes Classifier）的数学原理，包括贝叶斯定理、朴素贝叶斯分类器、参数估计、Laplace 校准等。用 numpy 实现 Naive Bayes Classifier 并不困难，各类机器学习框架中大多也已有高可用的实现，因此本文不会再代码细节上多做赘述。</p>
+
+<p>Naive Bayes Classifier 其实相当“朴素”，抛开对“机器学习”这一名词的无端恐惧，你就会发现其本只不过是一些列的概率计算 —— 下面就开始正文。</p>
+
+<h1 id="贝叶斯定理">贝叶斯定理</h1>
+
+<p>受过高中教育的人应该都知道贝叶斯定理，它是关于随机事件 A 和 B 的条件概率定理，其数学形式如下:
+$$
+P(A|B)=\dfrac{P(B|A)P(A)}{P(B)}
+$$
+其中有：</p>
+
+<ul>
+<li>P(A|B) 为已知 B 发生后 A 发生的条件概率，又被称作 A 的后验概率</li>
+<li>P(B|A) 为已知 A 发生后 B 发生的条件概率，又被称作 B 的后验概率</li>
+<li>P(A) 是 A 的先验概率或边缘概率</li>
+<li>P(B) 是 B 的先验概率</li>
+</ul>
+
+<p>利用韦恩图能很直观地理解这一定义：</p>
+
+<p><a href="https://i.loli.net/2019/09/25/Edf8IelUyDG9kmF.jpg"><img src="https://i.loli.net/2019/09/25/Edf8IelUyDG9kmF.jpg" alt="bayes-theorem-venn-graph.jpg" /></a></p>
+
+<p>因为 $P(A|B)=\dfrac{P(A\cap B)}{P(B)},P(B|A)=\dfrac{P(A\cap B)}{P(A)}$，故有 $P(A|B)P(B)=P(B|A)P(A)$，其中 $P(A\cap B)$ 通常也记作 $P(AB)$ 或 $P(A,B)$。</p>
+
+<h1 id="朴素贝叶斯分类器">朴素贝叶斯分类器</h1>
+
+<p>假设我们的已知数据集包括一系列特征向量（feature vector）以及与其对应的标记值（label value）。我们的期望是给定任一组新的特征值（feature value），我们能预测出标记空间（label space）中各标记值的取值概率 —— 并取概率最大的为我们的预测结果。</p>
+
+<p>举个具体的例子，我们已知若干人的身高、体重、鞋码及其对应的性别 —— 这里面身高、体重、鞋码就是特征值，性别就是标记值，特征值的有序集合就是特征向量（例如 $(172cm,70kg,10\ inches)$），所有可能的标记值的集合就是标记空间（例如 $(male,female)$）—— 而朴素贝叶斯模型（在本例中）所要做的事情就是已知一些人的身高、体重、鞋码等信息及其对应性别，从这些数据中学习，最后对于给定的某个（新的）人的身高、体重、鞋码等信息预测他/她的性别。</p>
+
+<p>那么如何从数据中学习并进行预测呢？<del>根据标题不难猜到</del>答案是利用 Bayes Theorem。将我们的特征向量记为 $F_1,\dots,F_n$，预测结果类别记为 $C$，则根据贝叶斯定理有：
+$$
+P(C|F_1,\dots,F_n)
+=\dfrac{P(C)P(F_1,\dots,F_n|C)}{P(F_1,\dots,F_n)}
+\propto{P(C,F_1,\dots,F_n)}
+$$
+其中分母部分 $P(F_1,\dots,F_n)$ 不依赖于 $C$ 且 $F_i$ 均为给定的定值，可以视为常数。</p>
+
+<p>又根据链式法则有：</p>
+
+<p>$$
+\begin{aligned}
+&amp;P(C|F_1,\dots,F_n)\newline
+&amp;\propto{P(C,F_1,\dots,F_n)}\newline
+&amp;\propto{P(C)P(F_1,\dots,F_n|C)}\newline
+&amp;\propto{P(C)P(F_1|C)P(F_2,\dots,F_n|C,F_1)}\newline
+&amp;\propto{P(C)P(F_1|C)P(F_2|C,F_1)P(F_3,\dots,F_n|C,F_1,F_2)}\newline
+&amp;\propto{P(C)P(F_1|C)P(F_2|C,F_1)\dots{P(F_n|C,F_1,F_2,\dots,F_{n-1})}}
+\end{aligned}
+$$</p>
+
+<p>这里我们引入了朴素贝叶斯模型的一个重要假设：所有朴素贝叶斯分类器都假定样本每个特征与其他特征都不相关。于是我们就能进一步化简上述公式：</p>
+
+<p>$$
+\begin{aligned}
+&amp;P(C|F_1,\dots,F_n)\newline
+&amp;\propto{P(C)P(F_1|C)P(F_2|C)\dots{P(F_n|C)}}\newline
+&amp;\propto{P(C)\prod_{i=1}^n{P(F_i|C)}}
+\end{aligned}
+$$</p>
+
+<p>至此我们已经基本完成了朴素贝叶斯模型的建立。根据<strong>最大后验概率准则</strong>，我们的朴素贝叶斯分类器函数表达式如下：</p>
+
+<p>$$
+\operatorname{classify}(f_1,\dots,f_n)=\underset{c}{\operatorname{argmax}}\ {P(C=c)\prod_{i=1}^n{P(F_i=f_i|C=c)}}
+$$</p>
+
+<p>即寻找某一类别 $c$ 使得 $P(C=c)\prod_{i=1}^n{P(F_i=f_i|C=c)}$ 的取值最大化，这个类别 $c$ 就是我们对给定特征向量 $(f_1,\dots,f_n)$ 的预测分类。</p>
+
+<h1 id="参数估计">参数估计</h1>
+
+<p>从最后的 $\operatorname{classify}$ 不难看出，朴素贝叶斯分类器的预测结果严重依赖于 $P(C),P(F|C)$ 的取值 —— 这些值被称作贝叶斯模型的参数。朴素贝叶斯模型训练步骤的主要工作就是计算这些参数。</p>
+
+<p>对于 $P(C)$ 我们通常选择 $P(C)=\dfrac{1}{\lvert C\rvert}$ 或 $P(C)=\dfrac{\lvert\text{Samples}_{C=c}\rvert}{\lvert\text{Samples}\rvert}$。例如对于上述预测性别的例子，我们可以假设实际男女人数基本相等，从而有 $P(C)=0.5$；也可以假设实际男女比例与样本中的男女比例相等，从而有 $P(C=\text{male})$ 为“样本中男性数量/样本总数量”。</p>
+
+<p>对于离散的特征值（例如二元特征值“有雨/无雨”或多元特征值“晴朗/多云/下雨”），我们通常使用统计学的方法 —— 例如 $P(F_i=\text{rainy}|C=\text{picnic})$ 的值为“外出野餐时下雨的样本数/外出野餐的样本数”。</p>
+
+<p>对于连续的特征值（例如身高 0cm~300cm），我们通常假设其服从正态分布（Normal Distribution，又称高斯分布，Gaussian Distribution），从而可得如下公式：
+$$
+\begin{aligned}
+P(F_i=f_i|C=c)&amp;=\dfrac{1}{\sqrt{2\pi}\sigma_{c,i}}\operatorname{exp}\left(-\dfrac{(x_i-\mu_{c,i})^2}{2\sigma_{c,i}^2}\right)\newline
+\mu_{c,i}&amp;=\operatorname{Average}(F_i|C=c)\newline
+\sigma_{c,i}&amp;=\operatorname{Variance}(F_i|C=c)
+\end{aligned}
+$$</p>
+
+<h2 id="laplace-校准">Laplace 校准</h2>
+
+<p>对于离散的特征值，如果我们的样本中存在某些缺失的项 —— 例如 $P(F_i=\text{rainy}|C=\text{picnic})=0$ —— 那么在进行 $\prod$ 连乘时会导致其他所有特征的贡献都被抹除了，这是比较严重的误差。尽管下雨天外出野餐的概率并不高，但可能存在其他因素使得人们即使下雨天也要外出野餐。为了避免这种状况，我们给所有从未出现的特征值进行样本修正（sample correction），为其赋予一个至少为 1 的伪计数（pseudocount）。当伪计数为 1 时，我们将这种技巧成为 Laplace smoothing；当伪计数为任意值时，称之为 Lidstone smoothing。</p>
+
+<p>关于朴素贝叶斯分类器的内容就这么多了，<del>要不是我的代码太丑了</del>可能会开放我用 numpy + pandas 实现朴素贝叶斯分类器的 Kaggle Kernel。</p>
+
+<hr />
+
+<p><strong>参考文献：</strong></p>
+
+<ul>
+<li><p><a href="https://www.cnblogs.com/leoo2sk/archive/2010/09/17/naive-bayesian-classifier.html">算法杂货铺——分类算法之朴素贝叶斯分类 (Naive Bayesian classification)</a></p></li>
+
+<li><p><a href="https://zh.wikipedia.org/wiki/贝叶斯定理">维基百科：贝叶斯定理</a></p></li>
+
+<li><p><a href="https://zh.wikipedia.org/wiki/朴素贝叶斯分类器">维基百科：朴素贝叶斯分类器</a></p></li>
+
+<li><p><a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier#Parameter_estimation_and_event_models">Wikipedia: Naive Bayes Classifier #Parameter Estimation</a></p></li>
+
+<li><p><a href="https://en.wikipedia.org/wiki/Additive_smoothing">Wikipedia: Additive Smoothing</a></p></li>
+</ul></div>
+        <div class="post_footer">
+          
+          <div class="meta">
+            <div class="info">
+              <span class="field tags">
+                <i class="remixicon-stack-line"></i>
+                
+                <a href="https://qufy.me/tags/machine-learning/">machine learning</a>
+                
+                <a href="https://qufy.me/tags/naive-bayes/">naive bayes</a>
+                
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <a id="back_to_top" href="#" class="back_to_top"><span>△</span></a>
+</div>
+<footer class="footer">
+  <div class="powered_by">
+    <a href="https://zeuk.me">Designed by Zeuk,</a>
+    <a href="http://www.gohugo.io/">Proudly published with Hugo</a>
+  </div>
+
+  <div class="footer_slogan">
+    <span></span>
+  </div>
+</footer>
+
+
+
+<script src="https://qufy.me/js/jquery-3.3.1.min.js"></script>
+<script src="https://qufy.me/js/zozo.js"></script>
+<script src="https://qufy.me/js/highlight.pack.js"></script>
+<link  href="https://qufy.me/css/fancybox.min.css" rel="stylesheet">
+<script src="https://qufy.me/js/fancybox.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad()</script>
+
+
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+
+
+</body>
+</html>

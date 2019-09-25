@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Queensferry&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 09 Aug 2019 13:32:36 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 25 Sep 2019 09:40:19 +0800</lastBuildDate>
     
 	<atom:link href="https://qufy.me/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>machine learning</title>
+      <link>https://qufy.me/tags/machine-learning/</link>
+      <pubDate>Wed, 25 Sep 2019 09:40:19 +0800</pubDate>
+      
+      <guid>https://qufy.me/tags/machine-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>naive bayes</title>
+      <link>https://qufy.me/tags/naive-bayes/</link>
+      <pubDate>Wed, 25 Sep 2019 09:40:19 +0800</pubDate>
+      
+      <guid>https://qufy.me/tags/naive-bayes/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>c&#43;&#43;</title>
