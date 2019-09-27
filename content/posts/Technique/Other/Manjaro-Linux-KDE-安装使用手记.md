@@ -17,7 +17,7 @@ Manjaro 的安装过程简洁无比。完善的图形界面引导取代了 Arch 
 
 其次就是刻录启动盘。官方推荐使用 [rufus](https://rufus.akeo.ie/) 来刻录启动盘。在刻录的时候记得选择`dd`模式刻录 ISO 文件，否则会出现问题。
 
-[![](https://i.loli.net/2018/09/16/5b9e4f986cb9e.png)](https://i.loli.net/2018/09/16/5b9e4f986cb9e.png)
+[![rufus](https://i.loli.net/2019/09/27/fCJqBpelaGcoUR8.png)](https://i.loli.net/2019/09/27/fCJqBpelaGcoUR8.png)
 
 刻录完毕后将U盘插入电脑重启就可以进入安装环节了。注意要在启动选项中选择从U盘启动（对于不同品牌的电脑可能有不同的启动选项配置快捷键，通常为`F2`，`F10`，`F12`等）。
 
@@ -26,7 +26,7 @@ Manjaro 的安装过程简洁无比。完善的图形界面引导取代了 Arch 
 
 但是对于安装双系统的同学就需要小心了。引导程序也特意用红色标出——表示抹除磁盘是个较为危险的选项。如果你的电脑上原来就装了Windows，那选择抹除磁盘会让你的Windows直接被清除。这个时候对分区流程清楚的同学可以选择手动分区，嫌麻烦的同学呢则可以选择直接取代一个分区。例如我在下图中选的就是用Manjaro直接取代原来的D盘。
 
-[![](https://i.loli.net/2018/09/16/5b9e501fdc0e7.png)](https://i.loli.net/2018/09/16/5b9e501fdc0e7.png)
+[![manjaro-install](https://i.loli.net/2019/09/27/RUh3YXMKVk5fxto.png)](https://i.loli.net/2019/09/27/RUh3YXMKVk5fxto.png)
 
 然后基本就大功告成啦。
 
@@ -72,7 +72,7 @@ sudo pacman -S archlinuxcn-keyring
 ### 桌面环境美化
 俗话说颜值是第一生产力（真的假的？）。但毋庸置疑一个漂亮的学习工作环境是会提高人的生产效率的。这里我就推荐一些桌面美化方案给大家参考。顺便晒一晒自己的桌面：
 
-[![](https://i.loli.net/2018/09/16/5b9e51de18248.png)](https://i.loli.net/2018/09/16/5b9e51de18248.png)
+[![screenshot](https://i.loli.net/2019/09/27/3xHceDOYPSRTfXL.png)](https://i.loli.net/2019/09/27/3xHceDOYPSRTfXL.png)
 
 #### Breezemite
 `Breezemite` 是一款模仿 MacOS 窗口按钮的 KDE 按钮主题。可以在 *系统设置 => 应用程序风格 => 窗口装饰* 里获取新主题安装它。注意你也可以在按钮选项中把窗口按钮调到左上角。

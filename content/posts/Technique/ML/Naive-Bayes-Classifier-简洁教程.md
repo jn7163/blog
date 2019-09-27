@@ -28,7 +28,7 @@ $$
 
 利用韦恩图能很直观地理解这一定义：
 
-[![bayes-theorem-venn-graph.jpg](https://i.loli.net/2019/09/25/Edf8IelUyDG9kmF.jpg)](https://i.loli.net/2019/09/25/Edf8IelUyDG9kmF.jpg)
+[![bayes-theorem-venn-graph](https://i.loli.net/2019/09/25/Edf8IelUyDG9kmF.jpg)](https://i.loli.net/2019/09/25/Edf8IelUyDG9kmF.jpg)
 
 因为 $P(A|B)=\dfrac{P(A\cap B)}{P(B)},P(B|A)=\dfrac{P(A\cap B)}{P(A)}$，故有 $P(A|B)P(B)=P(B|A)P(A)$，其中 $P(A\cap B)$ 通常也记作 $P(AB)$ 或 $P(A,B)$。
 

@@ -121,4 +121,4 @@ Page({
 
 如下图：
 
-[![img](https://i.loli.net/2018/09/16/5b9e5978e0c6e.gif)](https://i.loli.net/2018/09/16/5b9e5978e0c6e.gif)
+[![mp-example](https://i.loli.net/2019/09/27/BvqH9cmM5PDtw36.gif)](https://i.loli.net/2019/09/27/BvqH9cmM5PDtw36.gif)

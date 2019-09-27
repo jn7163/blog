@@ -76,7 +76,7 @@ class Subscriber:
 
 ## 观察者模式及其区别
 
-![observer-pattern](https://i.loli.net/2019/02/08/5c5d031b976ad.jpg)
+[![observer-pattern](https://i.loli.net/2019/09/27/JyqTrefNF6D4X5V.jpg)](https://i.loli.net/2019/09/27/JyqTrefNF6D4X5V.jpg)
 
 从上图不难看出，观察者模式与发布订阅模式的主要区别就是**中间件** 。发布订阅模式在生活中社交媒体上很常见，而观察者模式也有个常见的场景：JavaScript 中的事件模型。例如：
 

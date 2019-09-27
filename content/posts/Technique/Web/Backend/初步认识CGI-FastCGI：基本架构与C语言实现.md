@@ -26,7 +26,7 @@ tags:
 
 CGI 程序是独立于 Web Server 的中间件，它能起到连接服务器与数据库的作用 。下面这张图简单的说明了 CGI 的工作流程：
 
-![User-Server-CGI](https://i.loli.net/2018/12/30/5c2854c26d339.png)
+[![User-Server-CGI](https://i.loli.net/2019/09/27/iHtTQxFAZsfLNl2.png)](https://i.loli.net/2019/09/27/iHtTQxFAZsfLNl2.png)
 
 更准确的说，CGI 是一种 Web 服务器与应用程序之间的协议 —— 这个协议定义了二者之间数据传输的方式 。例如，使用**环境变量**来交换请求参数，使用**STDIN、STDOUT、STDERR**进行输入输出 。下面就给出一个简单的C 语言 CGI 程序：
 

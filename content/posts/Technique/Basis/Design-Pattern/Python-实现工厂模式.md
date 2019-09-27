@@ -251,7 +251,7 @@ print(factory.createText()) # <NightTextComponent 139692210593016>
 
 ## 总结
 
-[![factory_relation](https://i.loli.net/2019/02/25/5c73e5e209918.png)](https://i.loli.net/2019/02/25/5c73e5e209918.png)
+[![factory_relation](https://i.loli.net/2019/09/27/1KhGcuO5HCJrtq9.png)](https://i.loli.net/2019/09/27/1KhGcuO5HCJrtq9.png)
 
 -   简单工厂模式只有**工厂**、**抽象产品**与**具体产品**三种角色，一个工厂负责生产所有的产品 。不易于扩展，无法增添新产品 。《设计模式》一书中将简单工厂模式归为工厂方法模式的特例；
 -   工厂方法模式将工厂进一步细分为**抽象工厂**与**具体工厂**，一个具体工厂只负责生产一种具体产品 。具有较好的可扩展性，可以增添新产品；
